@@ -94,12 +94,27 @@ void Parser::testReadJsonFile(const char *fileName) {
              << setw(10) << left << p["sentiment"].GetString() << endl;
     }
 
+    auto organizations = d["entities"]["organizations"].GetArray();
+    cout << " Organization Entities" << endl;
+    for(auto& o : organizations) {
+        cout << "    > " << setw(30) << left << o["name"].GetString()
+             << setw(10) << left << o["sentiment"].GetString() << endl;
+    }
+
+    string text = d["text"].GetString();
+    cout << text << endl;
+    std::vector<string> tokenized = tokenizer(text, " \n\t\r\f");
+    for(string& s : tokenized) {
+        cout << s << endl;
+    }
+
     input.close();
 }
 
-//string tokenizer using stringstream
-std::vector<string> Parser::tokenizer(const string& arg, const string& delim) {
+//string tokenizer using iterators
+std::vector<string> Parser::tokenizer(string& arg, const string& delim) {
     std::vector<string> hold;
+    arg.erase(std::remove_if(arg.begin(), arg.end(), ispunct), arg.end());
     auto first = std::cbegin(arg);
 
     while(first != std::cend(arg)) {
@@ -110,5 +125,67 @@ std::vector<string> Parser::tokenizer(const string& arg, const string& delim) {
         }
         first = next(second);
     }
+    return hold;
+}
 
+// reading in stop words file and returning a vector of all stopwords to remove
+std::vector<string> Parser::readingStopWords(const char* stopwordsfile) {
+    std::vector<string> stopVec;
+
+    std::ifstream file_in(stopwordsfile);
+        if (!file_in.is_open()) {
+        std::cout << "Error opening file" << std::endl;
+        exit(1);
+    }
+    char buffer[50];
+
+    while (file_in.getline(buffer, 500)) {
+        string cmpStop(buffer);
+        stopVec.push_back(cmpStop);
+    }
+    file_in.close();
+
+    return stopVec;
+}
+
+// removing stop words from vector of strings and returning new vector of cleaned words
+std::vector<string> Parser::removeStopWords(const std::vector<string>& source, const std::vector<string>& stopwords) {
+    std::vector<string> retVal;
+
+    bool found;
+    for(int i = 0; i < source.size(); i++) {
+        found = false;
+        for(int j = 0; j < source.size(); j++) {
+            if(source[i] == stopwords[j]) {
+                found = true;
+            }
+        }
+        if(!found) {
+            retVal.push_back(source[i]);
+        }
+    }
+    return retVal;
+}
+
+// stemmer function that returns a vector of stemmed words
+std::vector<string> Parser::stemmer(const std::vector<string> &arg) {
+    std::vector<string> temp;
+
+    for (int i = 0; i < arg.size(); i++) {
+        std::string sourceText = arg[i];
+
+        // converting string to wstr
+        std::wstring wstr(sourceText.begin(), sourceText.end());
+
+        // creating stemming object
+        stemming::english_stem<> Stem;
+
+        // stemming the wstring
+        Stem(wstr);
+
+        // converting the wstring back into a string using a wstring_convert from the codecvt library
+        std::string str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wstr);
+        temp.push_back(str);
+    }
+    return temp;
 }
