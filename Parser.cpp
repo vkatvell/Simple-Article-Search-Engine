@@ -102,11 +102,19 @@ void Parser::testReadJsonFile(const char *fileName) {
     }
 
     string text = d["text"].GetString();
-    cout << text << endl;
+    //cout << text << endl;
     std::vector<string> tokenized = tokenizer(text, " \n\t\r\f");
-    for(string& s : tokenized) {
+
+    std::vector<string> stopWords = readingStopWords("sample_data/stopwords.txt");
+
+    std::vector<string> cleanedText = removeStopWords(tokenized, stopWords);
+
+    //printing tokenized text
+    for(string& s : cleanedText) {
         cout << s << endl;
     }
+
+
 
     input.close();
 }
@@ -114,7 +122,10 @@ void Parser::testReadJsonFile(const char *fileName) {
 //string tokenizer using iterators
 std::vector<string> Parser::tokenizer(string& arg, const string& delim) {
     std::vector<string> hold;
+    //remove punctuation from the original string (before tokenizing)
     arg.erase(std::remove_if(arg.begin(), arg.end(), ispunct), arg.end());
+
+    //
     auto first = std::cbegin(arg);
 
     while(first != std::cend(arg)) {
@@ -134,7 +145,7 @@ std::vector<string> Parser::readingStopWords(const char* stopwordsfile) {
 
     std::ifstream file_in(stopwordsfile);
         if (!file_in.is_open()) {
-        std::cout << "Error opening file" << std::endl;
+        std::cout << "Error opening stopwords file" << std::endl;
         exit(1);
     }
     char buffer[50];
