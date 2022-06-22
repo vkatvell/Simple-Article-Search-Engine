@@ -4,7 +4,9 @@
 
 #ifndef INC_22SU_SEARCH_ENGINE_PARSER_H
 #define INC_22SU_SEARCH_ENGINE_PARSER_H
+#include <string>
 
+using std::string;
 
 class Parser {
 public:
@@ -14,7 +16,7 @@ public:
     void testFileSystem(const char* path);
     void testReadJsonFile(const char* fileName);
     //tokenizer
-
+    std::vector<string> tokenizer(const string&, const string&);
     //stop word removal + stemming
 
 };

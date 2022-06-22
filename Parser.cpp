@@ -7,6 +7,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
+#include <vector>
+#include <string>
 
 //RapidJSON headers we need for our parsing.
 #include "rapidjson/istreamwrapper.h"
@@ -20,8 +22,15 @@ using std::ifstream;
 using std::setw;
 using std::left;
 
+//default constructor
 Parser::Parser() = default;
 
+
+/**
+ * example code for how to traverse the filesystem using std::filesystem
+ * @param path an absolute or relative path to a folder containing files
+ * you want to parse.
+ */
 void Parser::testFileSystem(const char *path) {
 
     //recursive_director_iterator used to "access" folder at parameter -path-
@@ -41,6 +50,11 @@ void Parser::testFileSystem(const char *path) {
     }
 }
 
+/**
+ * example code that reads and parses a json file and extracts the title and person
+ * entities.
+ * @param fileName filename with relative or absolute path included.
+ */
 void Parser::testReadJsonFile(const char *fileName) {
 
     //open an ifstream on the file of interest and check that it could be opened.
@@ -81,4 +95,20 @@ void Parser::testReadJsonFile(const char *fileName) {
     }
 
     input.close();
+}
+
+//string tokenizer using stringstream
+std::vector<string> Parser::tokenizer(const string& arg, const string& delim) {
+    std::vector<string> hold;
+    auto first = std::cbegin(arg);
+
+    while(first != std::cend(arg)) {
+        const auto second = std::find_first_of(first, std::cend(arg), std::cbegin(delim), std::cend(delim));
+        hold.emplace_back(first, second);
+        if(second == std::cend(arg)){
+            break;
+        }
+        first = next(second);
+    }
+
 }
