@@ -93,22 +93,22 @@ void Parser::testReadJsonFile(const char *fileName) {
     // to access particular values.
     cout << "  Person Entities:" << endl;
     for (auto& p : persons) {
-        cout << "    > " << setw(30) << left << p["name"].GetString()
-             << setw(10) << left << p["sentiment"].GetString() << endl;
+        cout << "    > " << setw(30) << left << p["name"].GetString() << endl;
+//             << setw(10) << left << p["sentiment"].GetString() << endl;
     }
 
     auto organizations = d["entities"]["organizations"].GetArray();
     cout << " Organization Entities" << endl;
     for(auto& o : organizations) {
-        cout << "    > " << setw(30) << left << o["name"].GetString()
-             << setw(10) << left << o["sentiment"].GetString() << endl;
+        cout << "    > " << setw(30) << left << o["name"].GetString() << endl;
+//             << setw(10) << left << o["sentiment"].GetString() << endl;
     }
 
     string text = d["text"].GetString();
     //cout << text << endl;
     std::unordered_map<string, int> text_map = tokenizer(text, " \n\t\r\f");
 
-    std::vector<string> stopWords = readingStopWords("sample_data/stopwords.txt");
+    std::unordered_map<string, int> stopWords = readingStopWords("sample_data/stopwords.txt");
 
     removeStopWords(text_map, stopWords);
 
@@ -158,38 +158,52 @@ std::unordered_map<string, int> Parser::tokenizer(string& arg, const string& del
 }
 
 // reading in stop words file and returning a vector of all stopwords to remove
-std::vector<string> Parser::readingStopWords(const char* stopwordsfile) {
-    std::vector<string> stopVec;
+std::unordered_map<string, int> Parser::readingStopWords(const char* stopwordsfile) {
+//    std::vector<string> stopVec;
+
+    std::unordered_map<string, int> umap;
 
     std::ifstream file_in(stopwordsfile);
         if (!file_in.is_open()) {
         std::cout << "Error opening stopwords file" << std::endl;
         exit(1);
     }
-    char buffer[50];
 
-    while (file_in.getline(buffer, 500)) {
-        string cmpStop(buffer);
-        stopVec.push_back(cmpStop);
-    }
+    char buffer[100];
+        file_in.getline(buffer, 100);
+
+        while(file_in.getline(buffer, 100)) {
+            string cmpStop(buffer);
+            umap[cmpStop]++;
+        }
+
+//    std::string line;
+//    std::stringstream input(line);
+//    while (getline(file_in, line)) {
+////        string cmpStop(buffer);
+////        stopVec.push_back(cmpStop);
+//        std::string stopword;
+//        input >> stopword;
+//
+//        umap[stopword]++;
+//    }
     file_in.close();
 
-    return stopVec;
+    return umap;
 }
 
 // removing stop words from vector of strings and returning new vector of cleaned words
-void Parser::removeStopWords(std::unordered_map<string, int>& source, const std::vector<string>& stopwords) {
+void Parser::removeStopWords(std::unordered_map<string, int>& source, const std::unordered_map<string, int>& stopwords) {
     std::vector<string> retVal;
     int i = 0;
 
     //for all stop words in the list
-    while(i < stopwords.size()){
-        //if key is present(find stops before end of list)
-        if(!(source.find(stopwords.at(i)) == source.end())) {
-            source.erase(stopwords.at(i));
+    for(const auto& itr : stopwords) {
+        if((source.find(itr.first) != source.end())) {
+            source.erase(itr.first);
         }
-        ++i;
     }
+
 }
 
 // stemmer function that returns a vector of stemmed words

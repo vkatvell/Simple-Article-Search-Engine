@@ -23,8 +23,8 @@ public:
     //tokenizer
     std::unordered_map<string, int> tokenizer(string&, const string&);
     //stop word reading + removal
-    std::vector<string> readingStopWords(const char* stopwordsfile);
-    void removeStopWords(std::unordered_map<string, int>& source, const std::vector<string>& stopwords);
+    std::unordered_map<string, int> readingStopWords(const char* stopwordsfile);
+    void removeStopWords(std::unordered_map<string, int>& source, const std::unordered_map<string, int>& stopwords);
     //stemming
     std::unordered_map<string, int> stemmer(const std::unordered_map<string, int> & source);
 
