@@ -8,7 +8,9 @@
 #include <fstream>
 #include <iomanip>
 #include <vector>
+#include <unordered_map>
 #include <string>
+#include <sstream>
 
 //RapidJSON headers we need for our parsing.
 #include "rapidjson/istreamwrapper.h"
@@ -103,40 +105,49 @@ void Parser::testReadJsonFile(const char *fileName) {
 
     string text = d["text"].GetString();
     //cout << text << endl;
-    std::vector<string> tokenized = tokenizer(text, " \n\t\r\f");
+    std::unordered_map<string, int> text_map = tokenizer(text, " \n\t\r\f");
 
     std::vector<string> stopWords = readingStopWords("sample_data/stopwords.txt");
 
-    std::vector<string> cleanedText = removeStopWords(tokenized, stopWords);
+    removeStopWords(text_map, stopWords);
+
+    //std::vector<string> stemmedText = stemmer(tokenized);
 
     //printing tokenized text
-    for(string& s : cleanedText) {
-        cout << s << endl;
-    }
-
-
+    for (const auto& i : text_map)
+        cout << i.first << "      " << i.second << endl;
 
     input.close();
 }
 
 //string tokenizer using iterators
-std::vector<string> Parser::tokenizer(string& arg, const string& delim) {
+std::unordered_map<string, int> Parser::tokenizer(string& arg, const string& delim) {
     std::vector<string> hold;
+    std::unordered_map<string, int> umap;
     //remove punctuation from the original string (before tokenizing)
     arg.erase(std::remove_if(arg.begin(), arg.end(), ispunct), arg.end());
 
-    //
+    //iterator set to the first character in the string
     auto first = std::cbegin(arg);
 
+    //while first it does not equal end char of the string
     while(first != std::cend(arg)) {
-        const auto second = std::find_first_of(first, std::cend(arg), std::cbegin(delim), std::cend(delim));
+
+        //second iterator finds the end of the token by comparing chars to delimiter values
+        auto second = std::find_first_of(first, std::cend(arg), std::cbegin(delim), std::cend(delim));
+        //push back
         hold.emplace_back(first, second);
+        //if second is equal to the end, restart the loop
         if(second == std::cend(arg)){
             break;
         }
-        first = next(second);
+        first = next(second); //otherwise continue the loop
     }
-    return hold;
+
+    for(auto & i : hold){
+        umap[i]++;
+    }
+    return umap;
 }
 
 // reading in stop words file and returning a vector of all stopwords to remove
@@ -160,42 +171,41 @@ std::vector<string> Parser::readingStopWords(const char* stopwordsfile) {
 }
 
 // removing stop words from vector of strings and returning new vector of cleaned words
-std::vector<string> Parser::removeStopWords(const std::vector<string>& source, const std::vector<string>& stopwords) {
+void Parser::removeStopWords(std::unordered_map<string, int>& source, const std::vector<string>& stopwords) {
     std::vector<string> retVal;
+    int i = 0;
 
-    bool found;
-    for(int i = 0; i < source.size(); i++) {
-        found = false;
-        for(int j = 0; j < source.size(); j++) {
-            if(source[i] == stopwords[j]) {
-                found = true;
-            }
+    //for all stop words in the list
+    while(i < stopwords.size()){
+        //if key is present(find stops before end of list)
+        if(!(source.find(stopwords.at(i)) == source.end())) {
+            source.erase(stopwords.at(i));
         }
-        if(!found) {
-            retVal.push_back(source[i]);
-        }
+        ++i;
     }
-    return retVal;
 }
 
 // stemmer function that returns a vector of stemmed words
 std::vector<string> Parser::stemmer(const std::vector<string> &arg) {
     std::vector<string> temp;
-
+    std::string sourceText;
     for (int i = 0; i < arg.size(); i++) {
-        std::string sourceText = arg[i];
+        sourceText = arg[i];
 
+        std::wstringstream cls;
+        cls << sourceText.c_str();
+        std::wstring total= cls.str();
         // converting string to wstr
-        std::wstring wstr(sourceText.begin(), sourceText.end());
+//        std::wstring wstr(sourceText.begin(), sourceText.end());
 
         // creating stemming object
         stemming::english_stem<> Stem;
 
         // stemming the wstring
-        Stem(wstr);
+        Stem(total);
 
         // converting the wstring back into a string using a wstring_convert from the codecvt library
-        std::string str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(wstr);
+        std::string str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(total);
         temp.push_back(str);
     }
     return temp;

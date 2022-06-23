@@ -5,6 +5,7 @@
 #ifndef INC_22SU_SEARCH_ENGINE_PARSER_H
 #define INC_22SU_SEARCH_ENGINE_PARSER_H
 #include <string>
+#include <unordered_map>
 
 // for converting string to wstring then back to string
 #include <codecvt>
@@ -20,10 +21,10 @@ public:
     void testFileSystem(const char* path);
     void testReadJsonFile(const char* fileName);
     //tokenizer
-    std::vector<string> tokenizer(string&, const string&);
+    std::unordered_map<string, int> tokenizer(string&, const string&);
     //stop word reading + removal
     std::vector<string> readingStopWords(const char* stopwordsfile);
-    std::vector<string> removeStopWords(const std::vector<string>& source, const std::vector<string>& stopwords);
+    void removeStopWords(std::unordered_map<string, int>& source, const std::vector<string>& stopwords);
     //stemming
     std::vector<string> stemmer(const std::vector<string> &);
 
