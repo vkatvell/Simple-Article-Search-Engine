@@ -17,6 +17,9 @@
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/document.h"
 
+//boost headers for tokenizing
+#include "boost/tokenizer.hpp"
+
 using namespace rapidjson;
 using std::cout;
 using std::endl;
@@ -112,14 +115,12 @@ void Parser::testReadJsonFile(const char *fileName) {
 
     removeStopWords(text_map, stopWords);
 
-//    std::vector<string> stemmedText = stemmer();
-
     std::unordered_map<string, int> stemmed_map = stemmer(text_map);
 
     //printing tokenized text
 //    for (const auto& i : text_map)
 //        cout << i.first << "      " << i.second << endl;
-    for (const auto& i : stemmed_map) //stemmed_map
+    //for (const auto& i : stemmed_map) //stemmed_map
 //        cout << i.first << "      " << i.second << endl;
 
 
