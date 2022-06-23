@@ -43,7 +43,7 @@ void Parser::testFileSystem(const char *path) {
     //loop over all the entries.
     for(const auto& entry : it) {
 
-        cout << "--- " << setw(60) << left << entry.path().c_str() << " ---" << endl;
+//        cout << "--- " << setw(60) << left << entry.path().c_str() << " ---" << endl;
 
         //We only want to attempt to parse files that end with .json...
         if (entry.is_regular_file() && entry.path().extension().string() == ".json") {
@@ -80,7 +80,7 @@ void Parser::testReadJsonFile(const char *fileName) {
     // as a c-string.
     //
     auto val = d["title"].GetString();
-    cout << "Title: " << val << endl;
+//    cout << "Title: " << val << endl;
 
     //The Persons entity for which you're building a specific inverted index is contained in
     // top level -entities- element.  So that's why we subscript with ["entities"]["persons"].
@@ -91,16 +91,16 @@ void Parser::testReadJsonFile(const char *fileName) {
     //We iterate over the Array returned from the line above.  Each element kind of operates like
     // a little JSON document object in that you can use the same subscript notation
     // to access particular values.
-    cout << "  Person Entities:" << endl;
+//    cout << "  Person Entities:" << endl;
     for (auto& p : persons) {
-        cout << "    > " << setw(30) << left << p["name"].GetString() << endl;
+//        cout << "    > " << setw(30) << left << p["name"].GetString() << endl;
 //             << setw(10) << left << p["sentiment"].GetString() << endl;
     }
 
     auto organizations = d["entities"]["organizations"].GetArray();
-    cout << " Organization Entities" << endl;
+//    cout << " Organization Entities" << endl;
     for(auto& o : organizations) {
-        cout << "    > " << setw(30) << left << o["name"].GetString() << endl;
+//        cout << "    > " << setw(30) << left << o["name"].GetString() << endl;
 //             << setw(10) << left << o["sentiment"].GetString() << endl;
     }
 
@@ -120,7 +120,7 @@ void Parser::testReadJsonFile(const char *fileName) {
 //    for (const auto& i : text_map)
 //        cout << i.first << "      " << i.second << endl;
     for (const auto& i : stemmed_map) //stemmed_map
-        cout << i.first << "      " << i.second << endl;
+//        cout << i.first << "      " << i.second << endl;
 
 
 
