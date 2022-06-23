@@ -119,7 +119,7 @@ void Parser::testReadJsonFile(const char *fileName) {
     //printing tokenized text
 //    for (const auto& i : text_map)
 //        cout << i.first << "      " << i.second << endl;
-    for (auto i : stemmed_map) //stemmed_map
+    for (const auto& i : stemmed_map) //stemmed_map
         cout << i.first << "      " << i.second << endl;
 
 
@@ -194,7 +194,6 @@ void Parser::removeStopWords(std::unordered_map<string, int>& source, const std:
 
 // stemmer function that returns a vector of stemmed words
 std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string, int> & source) {
-    std::vector<string> temp;
 
     std::unordered_map<string, int> umap;
     std::string sourceText;
@@ -217,16 +216,12 @@ std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string,
         // converting the wstring back into a string
         std::string str(total.begin(), total.end());
 
-        // pushing into temp vector
+        // iterating with stemmed words and adding to map
         while(val > 0){
-            temp.push_back(str);
+            ++umap[str];
             --val;
         }
     }
 
-    // iterating over vector with stemmed words and adding to map
-    for(auto & i : temp){
-        umap[i]++;
-    }
     return umap;
 }
