@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD 17)
 # folder that will be created in the build folder.
 file(COPY sample_data/ DESTINATION sample_data/)
 
-
 # This target is for the main project.  Add in any additional files you need or that you're copying
 # over from a previous project.
 add_executable(22su_search_engine main.cpp DSVector.h Parser.cpp Parser.h)
