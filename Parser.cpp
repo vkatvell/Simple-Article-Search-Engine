@@ -3,14 +3,15 @@
 //
 
 #include "Parser.h"
-#include <iostream>
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
-#include <vector>
-#include <unordered_map>
+#include <iostream>
 #include <string>
 #include <sstream>
+#include <unordered_map>
+#include <vector>
 
 //RapidJSON headers we need for our parsing.
 #include "rapidjson/istreamwrapper.h"
@@ -118,7 +119,7 @@ void Parser::testReadJsonFile(const char *fileName) {
     //printing tokenized text
 //    for (const auto& i : text_map)
 //        cout << i.first << "      " << i.second << endl;
-    for (const auto& i : stemmed_map)
+    for (auto i : stemmed_map) //stemmed_map
         cout << i.first << "      " << i.second << endl;
 
 
@@ -132,7 +133,7 @@ std::unordered_map<string, int> Parser::tokenizer(string& arg, const string& del
     std::unordered_map<string, int> umap;
     //remove punctuation from the original string (before tokenizing)
     arg.erase(std::remove_if(arg.begin(), arg.end(), ispunct), arg.end());
-
+    std::transform(arg.begin(), arg.end(), arg.begin(), [](unsigned char c){ return std::tolower(c);});
     //iterator set to the first character in the string
     auto first = std::cbegin(arg);
 
@@ -197,8 +198,10 @@ std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string,
 
     std::unordered_map<string, int> umap;
     std::string sourceText;
-    for (auto itr : source) {
+    int val;
+    for (const auto& itr : source) {
         sourceText = itr.first;
+        val = itr.second;
 
         // converting string to wstr
         std::wstringstream cls;
@@ -215,7 +218,10 @@ std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string,
         std::string str(total.begin(), total.end());
 
         // pushing into temp vector
-        temp.push_back(str);
+        while(val > 0){
+            temp.push_back(str);
+            --val;
+        }
     }
 
     // iterating over vector with stemmed words and adding to map
