@@ -117,8 +117,8 @@ void Parser::testReadJsonFile(const char *fileName) {
     //printing tokenized text
 //    for (const auto& i : text_map)
 //        cout << i.first << "      " << i.second << endl;
-    //for (const auto& i : stemmed_map) //stemmed_map
-//        cout << i.first << "      " << i.second << endl;
+    for (const auto& i : stemmed_map) //stemmed_map
+        cout << i.first << "      " << i.second << endl;
 
 
 

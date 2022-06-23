@@ -34,7 +34,9 @@ int main() {
     cout << "-------------------------------------------" << endl;
     cout << "------     File System Example       ------" << endl;
     cout << "-------------------------------------------" << endl;
-    p.testFileSystem("/Users/noahhenson/Downloads/archive/2018_01_112b52537b67659ad3609a234388c50a");
+
+    p.testFileSystem("sample_data/");
+//    p.testFileSystem("/Users/noahhenson/Downloads/archive/2018_01_112b52537b67659ad3609a234388c50a");
 
     // absolute path
 //    p.testFileSystem("/Users/venkatsvellanki/Downloads/financial_articles/2018_01_112b52537b67659ad3609a234388c50a/");
