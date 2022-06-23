@@ -26,7 +26,7 @@ public:
     std::vector<string> readingStopWords(const char* stopwordsfile);
     void removeStopWords(std::unordered_map<string, int>& source, const std::vector<string>& stopwords);
     //stemming
-    std::vector<string> stemmer(const std::vector<string> &);
+    std::unordered_map<string, int> stemmer(const std::unordered_map<string, int> & source);
 
 };
 

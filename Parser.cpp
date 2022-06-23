@@ -111,11 +111,17 @@ void Parser::testReadJsonFile(const char *fileName) {
 
     removeStopWords(text_map, stopWords);
 
-    //std::vector<string> stemmedText = stemmer(tokenized);
+//    std::vector<string> stemmedText = stemmer();
+
+    std::unordered_map<string, int> stemmed_map = stemmer(text_map);
 
     //printing tokenized text
-    for (const auto& i : text_map)
+//    for (const auto& i : text_map)
+//        cout << i.first << "      " << i.second << endl;
+    for (const auto& i : stemmed_map)
         cout << i.first << "      " << i.second << endl;
+
+
 
     input.close();
 }
@@ -186,17 +192,18 @@ void Parser::removeStopWords(std::unordered_map<string, int>& source, const std:
 }
 
 // stemmer function that returns a vector of stemmed words
-std::vector<string> Parser::stemmer(const std::vector<string> &arg) {
+std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string, int> & source) {
     std::vector<string> temp;
-    std::string sourceText;
-    for (int i = 0; i < arg.size(); i++) {
-        sourceText = arg[i];
 
+    std::unordered_map<string, int> umap;
+    std::string sourceText;
+    for (auto itr : source) {
+        sourceText = itr.first;
+
+        // converting string to wstr
         std::wstringstream cls;
         cls << sourceText.c_str();
         std::wstring total= cls.str();
-        // converting string to wstr
-//        std::wstring wstr(sourceText.begin(), sourceText.end());
 
         // creating stemming object
         stemming::english_stem<> Stem;
@@ -204,9 +211,16 @@ std::vector<string> Parser::stemmer(const std::vector<string> &arg) {
         // stemming the wstring
         Stem(total);
 
-        // converting the wstring back into a string using a wstring_convert from the codecvt library
-        std::string str = std::wstring_convert<std::codecvt_utf8<wchar_t>>().to_bytes(total);
+        // converting the wstring back into a string
+        std::string str(total.begin(), total.end());
+
+        // pushing into temp vector
         temp.push_back(str);
     }
-    return temp;
+
+    // iterating over vector with stemmed words and adding to map
+    for(auto & i : temp){
+        umap[i]++;
+    }
+    return umap;
 }
