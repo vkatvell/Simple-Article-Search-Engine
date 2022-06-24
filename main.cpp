@@ -14,6 +14,8 @@
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/document.h"
 
+#include "QueryProcessor.h"
+
 using namespace rapidjson;
 using std::cout;
 using std::endl;
@@ -26,15 +28,17 @@ int main() {
 
     Parser p;
 
+    QueryProcessor q;
+
     cout << "-------------------------------------------" << endl;
-    cout << "------ RapidJSON Doc Parsing Example ------" << endl;
+    cout << "----------------- Parsing -----------------" << endl;
     cout << "-------------------------------------------" << endl;
     //p.testReadJsonFile("sample_data/news_0064570.json");
 
-    cout << "\n";
-    cout << "-------------------------------------------" << endl;
-    cout << "------     File System Example       ------" << endl;
-    cout << "-------------------------------------------" << endl;
+//    cout << "\n";
+//    cout << "-------------------------------------------" << endl;
+//    cout << "------     File System Example       ------" << endl;
+//    cout << "-------------------------------------------" << endl;
 
     //p.testFileSystem("sample_data/");
 //    p.testFileSystem("/Users/noahhenson/Downloads/archive/2018_01_112b52537b67659ad3609a234388c50a");
@@ -42,15 +46,18 @@ int main() {
     // absolute path
 //    p.testFileSystem("/Users/venkatsvellanki/Downloads/financial_articles/2018_01_112b52537b67659ad3609a234388c50a/");
 
-    AVLTree<string, int> temp;
-    string hold = "string";
-    int repeat = 0;
-    while(repeat >= 0) {
-        cin >> hold;
-        cin >>repeat;
-        temp.insert(hold); //TODO why does this think its an int
-    }
-    temp.print();
+//    p.testFileSystem("/Users/venkatsvellanki/Downloads/sample_data_sets/size-10/");
 
+//    AVLTree<string, int> temp;
+//    string hold = "string";
+//    int repeat = 0;
+//    while(repeat >= 0) {
+//        cin >> hold;
+//        cin >>repeat;
+//        temp.insert(hold);
+//    }
+//    temp.print();
 
+    string input;
+    q.readingQueries(input);
 }

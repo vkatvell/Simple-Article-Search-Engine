@@ -4,9 +4,24 @@
 
 #ifndef INC_22SU_SEARCH_ENGINE_QUERYPROCESSOR_H
 #define INC_22SU_SEARCH_ENGINE_QUERYPROCESSOR_H
-
+#include <iostream>
+#include <string>
+#include "olestem/stemming/english_stem.h"
+#include <algorithm>
+#include <sstream>
 
 class QueryProcessor {
+private:
+
+public:
+
+void readingQueries(std::string input); // stem and lowercase queries too
+
+std::string stemQuery(std::string input);
+
+void toLower(std::string & input);
+// void printResults(const char* pathtoarticle);
+
 
 };
 

@@ -79,29 +79,27 @@ void Parser::testReadJsonFile(const char *fileName) {
     // an array or something else), we call the GetString() function to return the actual title of the article
     // as a c-string.
     //
-    //auto val = d["title"].GetString();
+    auto val = d["title"].GetString();
 //    cout << "Title: " << val << endl;
 
     //The Persons entity for which you're building a specific inverted index is contained in
     // top level -entities- element.  So that's why we subscript with ["entities"]["persons"].
     // The value associated with entities>persons is an array.  So we call GetArray() to get
     // an iterable collection of elements
-    //auto persons = d["entities"]["persons"].GetArray();
+    auto persons = d["entities"]["persons"].GetArray();
 
     //We iterate over the Array returned from the line above.  Each element kind of operates like
     // a little JSON document object in that you can use the same subscript notation
     // to access particular values.
 //    cout << "  Person Entities:" << endl;
 //    for (auto& p : persons) {
-////        cout << "    > " << setw(30) << left << p["name"].GetString() << endl;
-////             << setw(10) << left << p["sentiment"].GetString() << endl;
+//        cout << "    > " << setw(30) << left << p["name"].GetString() << endl;
 //    }
 
-    //auto organizations = d["entities"]["organizations"].GetArray();
+    auto organizations = d["entities"]["organizations"].GetArray();
 //    cout << " Organization Entities" << endl;
 //    for(auto& o : organizations) {
-////        cout << "    > " << setw(30) << left << o["name"].GetString() << endl;
-////             << setw(10) << left << o["sentiment"].GetString() << endl;
+//        cout << "    > " << setw(30) << left << o["name"].GetString() << endl;
 //    }
 
     string text = d["text"].GetString();
@@ -117,9 +115,8 @@ void Parser::testReadJsonFile(const char *fileName) {
     //printing tokenized text
 //    for (const auto& i : text_map)
 //        cout << i.first << "      " << i.second << endl;
-    for (const auto& i : stemmed_map) //stemmed_map
-        cout << i.first << "      " << i.second << endl;
-
+//    for (const auto& i : stemmed_map) //stemmed_map
+//        cout << i.first << "      " << i.second << endl;
 
 
     input.close();
@@ -153,21 +150,7 @@ std::unordered_map<string, int> Parser::tokenizer(string& arg, const string& del
         ++umap[i];
     }//to the first character in the string
     return umap;
-//    auto first = std::cbegin(arg);
-//
-//    //while first it does not equal end char of the string
-//    while(first != std::cend(arg)) {
-//
-//        //second iterator finds the end of the token by comparing chars to delimiter values
-//        auto second = std::find_first_of(first, std::cend(arg), std::cbegin(delim), std::cend(delim));
-//        //push back
-//        hold.emplace_back(first, second);
-//        //if second is equal to the end, restart the loop
-//        if(second == std::cend(arg)){
-//            break;
-//        }
-//        first = next(second); //otherwise continue the loop
-//    }
+
 
 
 }
@@ -192,16 +175,6 @@ std::unordered_map<string, int> Parser::readingStopWords(const char* stopwordsfi
             umap[cmpStop]++;
         }
 
-//    std::string line;
-//    std::stringstream input(line);
-//    while (getline(file_in, line)) {
-////        string cmpStop(buffer);
-////        stopVec.push_back(cmpStop);
-//        std::string stopword;
-//        input >> stopword;
-//
-//        umap[stopword]++;
-//    }
     file_in.close();
 
     return umap;
@@ -230,7 +203,7 @@ std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string,
         val = itr.second;
 
         // converting string to wstr
-        std::wstringstream cls;
+        std::wstringstream cls; // TODO can do this without stringstream?
         cls << sourceText.c_str();
         std::wstring total= cls.str();
 
