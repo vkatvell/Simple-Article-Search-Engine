@@ -19,6 +19,8 @@ private:
         AVLNode* left = nullptr;
         AVLNode* right = nullptr;
         int height = 0;
+
+        AVLNode(K key, V value, AVLNode* left, AVLNode* right, int height);
     };
 
     AVLNode* root = nullptr;
@@ -39,10 +41,30 @@ private:
 
     void doubleWithLeftChild(AVLNode*& k3);
 
+    AVLNode* nodeCopy (AVLNode* curr);
 public:
+    //default constructor
+    AVLTree();
+    //copy constructor
+    AVLTree(const AVLTree&);
+    //destructor
+    void deleteTree(AVLNode*&);
+    ~AVLTree();
+    //print tree using in order
     void print();
+    //insert a value into the tree
     void insert(K x);
 };
+
+template<typename K, typename V>
+AVLTree<K, V>::AVLNode::AVLNode(K givenKey, V givenValue, AVLTree::AVLNode *leftNode, AVLTree::AVLNode *rightNode, int ht) {
+    this->key = givenKey;
+    this->value = givenValue;
+    this->left = leftNode;
+    this->right = rightNode;
+    this->height = ht;
+}
+
 
 template <typename K, typename V>
 int AVLTree<K,V>::getHeight(AVLNode* curr) {
@@ -133,6 +155,34 @@ void AVLTree<K,V>::doubleWithLeftChild(AVLNode *&k3) {
     rotateWithLeftChild(k3);
 }
 
+//default constructor
+template <typename K, typename V>
+AVLTree<K,V>::AVLTree() = default;
+
+//copy constructor
+template <typename K, typename V>
+AVLTree<K,V>::AVLTree(const AVLTree& arg){
+    root = nodeCopy(arg.root);
+}
+
+//destructor
+template <typename K, typename V>
+void AVLTree<K,V>::deleteTree(AVLNode*& curr){
+    if(curr != nullptr){
+        deleteTree(curr->left);
+        deleteTree(curr->right);
+        delete curr;
+        curr = nullptr;
+    }
+}
+
+//starts deleting the tree from the root via a recursive function
+template <typename K, typename V>
+AVLTree<K,V>::~AVLTree(){
+    deleteTree(root);
+    if(root == nullptr) {std::cout << "root cleared";}
+}
+
 template <typename K, typename V>
 void AVLTree<K,V>::print() {
     print(root);
@@ -141,6 +191,17 @@ void AVLTree<K,V>::print() {
 template <typename K, typename V>
 void AVLTree<K,V>::insert(K x) {
     insert(root, x);
+}
+
+//copies the nodes of the tree using recursion
+template<typename K, typename V>
+typename AVLTree<K,V>::AVLNode* AVLTree<K, V>::nodeCopy(AVLTree::AVLNode *curr) {
+    if(curr != nullptr) {
+        AVLNode* left = nodeCopy(curr->left);
+        AVLNode* right = nodeCopy(curr->right);
+        return new AVLNode(curr->key, curr->value, left, right, curr->height);
+    }else
+        return nullptr;
 }
 
 #endif //INC_22SU_SEARCH_ENGINE_AVLTREE_H
