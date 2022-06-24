@@ -29,7 +29,7 @@ private:
 
     void insert(AVLNode*& curr, K x);
 
-    int max(K a, K b);
+    int max(int a, int b);
 
     void rotateWithRightChild(AVLNode*& k1);
 
@@ -93,8 +93,11 @@ void AVLTree<K,V>::insert(AVLNode*& curr, K x) {
 }
 
 template <typename K, typename V>
-int AVLTree<K,V>::max(K a, K b) {
-    (a < b) ? b : a;
+int AVLTree<K,V>::max(int a, int b) {
+    if(a < b)
+        return b;
+    else
+        return a;
 }
 
 template <typename K, typename V>

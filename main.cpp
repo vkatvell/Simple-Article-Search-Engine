@@ -50,6 +50,7 @@ int main() {
         cin >>repeat;
         temp.insert(hold); //TODO why does this think its an int
     }
+    temp.print();
 
 
 }
