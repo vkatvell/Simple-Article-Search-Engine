@@ -209,8 +209,6 @@ std::unordered_map<string, int> Parser::readingStopWords(const char* stopwordsfi
 
 // removing stop words from vector of strings and returning new vector of cleaned words
 void Parser::removeStopWords(std::unordered_map<string, int>& source, const std::unordered_map<string, int>& stopwords) {
-    std::vector<string> retVal;
-    int i = 0;
 
     //for all stop words in the list
     for(const auto& itr : stopwords) {
