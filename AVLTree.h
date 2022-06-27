@@ -118,7 +118,7 @@ void AVLTree<K,V>::insert(AVLTree<K,V>::AVLNode*& curr, const K& x, const V& v) 
         insert(curr->right, x, v);
     }else {
         //handle duplicates
-        if(!curr->value.find(v)) {
+        if(curr->value.find(v) == curr->value.end()) {
             curr->value.insert(v);
         }
         curr->height = max(getHeight(curr->left), getHeight(curr->right));
