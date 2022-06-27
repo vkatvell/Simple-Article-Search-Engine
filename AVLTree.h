@@ -225,7 +225,7 @@ std::unordered_set<std::string> AVLTree<K, V>::searchTree(const K& k){
 
 template<typename K, typename V>
 std::unordered_set<std::string> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
-    if(curr == nullptr || curr->key == k) {
+    if(curr->key == k) {
         unordered_set<std::string> set = curr->value;
         return set;
     }

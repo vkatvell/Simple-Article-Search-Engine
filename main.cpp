@@ -3,12 +3,7 @@
  * includes some example code related to 2341 final project for summer 2022
  */
 #include <iostream>
-#include <filesystem>
-#include <fstream>
 #include <iomanip>
-
-#include "Parser.h"
-#include "AVLTree.h"
 
 //RapidJSON headers we need for our parsing.
 #include "rapidjson/istreamwrapper.h"
@@ -26,16 +21,8 @@ using std::left;
 
 int main(int argc, char** argv) {
 
-//    Parser p;
-//
-//    QueryProcessor q;
-
     SearchEngine s;
 
-
-    cout << "-------------------------------------------" << endl;
-    cout << "----------------- Parsing -----------------" << endl;
-    cout << "-------------------------------------------" << endl;
     //p.testReadJsonFile("sample_data/news_0064570.json");
 
 
@@ -50,7 +37,5 @@ int main(int argc, char** argv) {
     s.searchForQuery(argv[1], argv[2]);
 
 
-//    string input;
-//    q.readingQueries(input, argv[1]);
 return 0;
 }
