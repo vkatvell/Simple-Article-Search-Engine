@@ -86,14 +86,15 @@ void QueryProcessor::menuSystem() {
         int input{0};
         cin >> input;
 
+        if(input == -1) {
+            continue_running = false;
+        } // end menu option -1
+
         // ending program if user selects -1 option
         if(!continue_running) {
             cout << "Thank you for searching. Goodbye..." << endl;
             break;
         }
-        if(input == -1) {
-            continue_running = false;
-        } // end menu option -1
 
         // 1. clearing current index
         if(input == 1) {
