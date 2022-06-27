@@ -225,22 +225,22 @@ std::unordered_set<std::string> AVLTree<K, V>::searchTree(const K& k){
 
 template<typename K, typename V>
 std::unordered_set<std::string> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
-    if(curr->key == k) {
+    if(curr == nullptr) {
+        cout << "Word not found" << std::endl; //TODO THIS DOES NOT RETURN A VALUE
+        unordered_set<std::string> empty;
+        return empty;
+
+    }else if(curr->key == k) {
         unordered_set<std::string> set = curr->value;
         return set;
     }
-
-    if(curr->key < k) {
+    else if(curr->key < k) {
         unordered_set<std::string> set = searchTree(curr->right, k);
         return set;
     }
-    else if (k < curr->key) {
+    else {
         unordered_set<std::string> set = searchTree(curr->left, k);
         return set;
-    }
-    else {
-        cout << "Word not found" << std::endl; //TODO THIS DOES NOT RETURN A VALUE
-        throw std::runtime_error("Word not found in tree");
     }
 }
 
