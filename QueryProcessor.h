@@ -15,7 +15,7 @@ private:
 
 public:
 
-void readingQueries(std::string input, const char*); // stem and lowercase queries too
+std::string readingQueries(std::string& input, const char*); // stem and lowercase queries too
 
 std::string stemQuery(std::string input);
 

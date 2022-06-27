@@ -10,6 +10,7 @@
 // for converting string to wstring then back to string
 #include <codecvt>
 #include "olestem/stemming/english_stem.h"
+#include "AVLTree.h"
 
 using std::string;
 
@@ -18,8 +19,8 @@ public:
     //default constructor
     Parser();
     //parse json docs
-    void testFileSystem(const char* path);
-    void testReadJsonFile(const char* fileName);
+    void testFileSystem(const char* path, AVLTree<string, string> &);
+    void testReadJsonFile(AVLTree<string, string> &, const char* fileName);
     //tokenizer
     std::unordered_map<string, int> tokenizer(string&, const string&);
     //stop word reading + removal

@@ -58,7 +58,7 @@ public:
     //insert a value into the tree
     void insert(const K& k, const V& v);
 
-    V& searchTree(AVLNode*, const K& k);
+    V& searchTree(const K& k);
 };
 
 template<typename K, typename V>
@@ -216,16 +216,16 @@ typename AVLTree<K,V>::AVLNode* AVLTree<K, V>::nodeCopy(AVLTree<K,V>::AVLNode *c
 }
 
 template<typename K, typename V>
-V &AVLTree<K, V>::searchTree(AVLTree::AVLNode * curr, const K& k) {
-    if(curr == nullptr || curr->key == k) {
-        return curr->value;
+V &AVLTree<K, V>::searchTree(const K& k) {
+    if(root == nullptr || root->key == k) {
+        return root->value;
     }
 
-    if(curr->key < k) {
-        return search(curr->right, k);
+    if(root->key < k) {
+        return search(root->right, k);
     }
     else
-        return search(curr->left, k);
+        return search(root->left, k);
 }
 
 #endif //INC_22SU_SEARCH_ENGINE_AVLTREE_H

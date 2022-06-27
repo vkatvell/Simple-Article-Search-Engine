@@ -36,7 +36,7 @@ Parser::Parser() = default;
  * @param path an absolute or relative path to a folder containing files
  * you want to parse.
  */
-void Parser::testFileSystem(const char *path) {
+void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordIndex) {
 
     //recursive_director_iterator used to "access" folder at parameter -path-
     //we are using the recursive iterator so it will go into subfolders.
@@ -49,7 +49,7 @@ void Parser::testFileSystem(const char *path) {
 
         //We only want to attempt to parse files that end with .json...
         if (entry.is_regular_file() && entry.path().extension().string() == ".json") {
-            testReadJsonFile(entry.path().c_str());
+            testReadJsonFile(wordIndex, entry.path().c_str());
         }
 
     }
@@ -60,7 +60,7 @@ void Parser::testFileSystem(const char *path) {
  * entities.
  * @param fileName filename with relative or absolute path included.
  */
-void Parser::testReadJsonFile(const char *fileName) {
+void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *fileName) {
 
     //open an ifstream on the file of interest and check that it could be opened.
     ifstream input(fileName);
@@ -112,7 +112,7 @@ void Parser::testReadJsonFile(const char *fileName) {
 
     removeStopWords(text_map, stopWords);
 
-    AVLTree<string, string> wordIndex;
+
 
     std::unordered_map<string, int> stemmed_map = stemmer(text_map);
 
@@ -122,9 +122,7 @@ void Parser::testReadJsonFile(const char *fileName) {
 
     while(it != stemmed_map.end()) {
             wordIndex.insert(it->first, filePath);
-
     }
-
 
 
     //printing tokenized text
