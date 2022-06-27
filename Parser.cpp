@@ -52,11 +52,13 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordInde
 
         //We only want to attempt to parse files that end with .json...
         if (entry.is_regular_file() && entry.path().extension().string() == ".json") {
-//            counter++;
+            counter++;
             testReadJsonFile(wordIndex, entry.path().c_str(), stopWords, counter);
         }
 
     }
+
+    cout << endl;
 }
 
 /**
@@ -123,9 +125,10 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
     string filePath = fileName;
 
 
-//    if(counter % 10000) {
-//        cout << "*";
-//    }
+    if(counter % 10000 == 0) {
+        cout << "*";
+        cout.flush();
+    }
 
     while(it != stemmed_map.end()) {
             wordIndex.insert(it->first, filePath);
