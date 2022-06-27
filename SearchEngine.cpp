@@ -17,7 +17,9 @@ void SearchEngine::searchForQuery(const char* query, const char* dataset) {
 
     string searchWord = q.readingQueries(temp, query);
 
+
     unordered_set<string> paths;
-    paths.insert(wordIndex.searchTree(searchWord));
+
+    wordIndex.searchTree(searchWord);
 
 }

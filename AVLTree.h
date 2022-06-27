@@ -45,6 +45,8 @@ private:
 
     AVLNode* nodeCopy (AVLNode* curr);
 
+    V& searchTree(AVLNode*& curr, const K&) const;
+
 public:
     //default constructor
     AVLTree();
@@ -58,7 +60,7 @@ public:
     //insert a value into the tree
     void insert(const K& k, const V& v);
 
-    V& searchTree(const K& k);
+    std::unordered_set<std::string> searchTree(const K& k);
 };
 
 template<typename K, typename V>
@@ -216,16 +218,28 @@ typename AVLTree<K,V>::AVLNode* AVLTree<K, V>::nodeCopy(AVLTree<K,V>::AVLNode *c
 }
 
 template<typename K, typename V>
-V &AVLTree<K, V>::searchTree(const K& k) {
+std::unordered_set<std::string> AVLTree<K, V>::searchTree(const K& k){
+    return searchTree(root, k);
+}
+
+template<typename K, typename V>
+V& AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
     if(root == nullptr || root->key == k) {
-        return root->value;
+        unordered_set<std::string> set = root->value;
+        return set;
     }
 
     if(root->key < k) {
-        return search(root->right, k);
+        unordered_set<std::string> set = searchTree(root->right, k);
+        return set;
     }
-    else
-        return search(root->left, k);
+    else if (k < root->key) {
+        unordered_set<std::string> set = searchTree(root->left, k);
+        return set;
+    }
+    else {
+        cout << "Word not found" << std::endl;
+    }
 }
 
 #endif //INC_22SU_SEARCH_ENGINE_AVLTREE_H
