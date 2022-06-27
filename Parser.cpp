@@ -41,6 +41,10 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordInde
     //we are using the recursive iterator so it will go into subfolders.
     auto it = std::filesystem::recursive_directory_iterator(path);
 
+    int counter = 0;
+
+    std::unordered_map<string, int> stopWords = readingStopWords("sample_data/stopwords.txt");
+
     //loop over all the entries.
     for(const auto& entry : it) {
 
@@ -48,7 +52,8 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordInde
 
         //We only want to attempt to parse files that end with .json...
         if (entry.is_regular_file() && entry.path().extension().string() == ".json") {
-            testReadJsonFile(wordIndex, entry.path().c_str());
+//            counter++;
+            testReadJsonFile(wordIndex, entry.path().c_str(), stopWords, counter);
         }
 
     }
@@ -59,7 +64,7 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordInde
  * entities.
  * @param fileName filename with relative or absolute path included.
  */
-void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *fileName) {
+void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *fileName, const std::unordered_map<string, int> & stopWords, int &counter) {
 
     //open an ifstream on the file of interest and check that it could be opened.
     ifstream input(fileName);
@@ -107,7 +112,7 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
     //cout << text << endl;
     std::unordered_map<string, int> text_map = tokenizer(text, " \n\t\r\f");
 
-    std::unordered_map<string, int> stopWords = readingStopWords("sample_data/stopwords.txt");
+//    std::unordered_map<string, int> stopWords = readingStopWords("sample_data/stopwords.txt"); //TODO call reading in file
 
     removeStopWords(text_map, stopWords);
 
@@ -116,6 +121,11 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
     auto it = stemmed_map.begin();
 
     string filePath = fileName;
+
+
+//    if(counter % 10000) {
+//        cout << "*";
+//    }
 
     while(it != stemmed_map.end()) {
             wordIndex.insert(it->first, filePath);

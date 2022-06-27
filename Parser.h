@@ -20,7 +20,7 @@ public:
     Parser();
     //parse json docs
     void testFileSystem(const char* path, AVLTree<string, string> &);
-    static void testReadJsonFile(AVLTree<string, string> &, const char* fileName);
+    static void testReadJsonFile(AVLTree<string, string> &, const char* fileName,const std::unordered_map<string, int>& stopWords, int &counter);
     //tokenizer
     static std::unordered_map<string, int> tokenizer(string&, const string&);
     //stop word reading + removal
