@@ -48,16 +48,18 @@ int main(int argc, char** argv) {
 
 //    p.testFileSystem("/Users/venkatsvellanki/Downloads/sample_data_sets/size-10/");
 
-//    AVLTree<string, int> temp;
-//    string hold = "string";
-//    int repeat = 0;
-//    while(repeat >= 0) {
-//        cin >> hold;
-//        cin >>repeat;
-//        temp.insert(hold);
-//    }
-//    temp.print();
+    AVLTree<string, string> temp;
+    string hold = "string";
+    string buff = "clown";
+    int repeat = 0;
+    while(repeat >= 0) {
+        cin >> hold;
+        cin >> buff;
+        cin >>repeat;
+        temp.insert(hold, hold);
+    }
+    temp.print();
 
-    string input;
-    q.readingQueries(input, argv[1]);
+//    string input;
+//    q.readingQueries(input, argv[1]);
 }

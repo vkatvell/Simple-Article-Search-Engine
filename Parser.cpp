@@ -116,7 +116,7 @@ void Parser::testReadJsonFile(const char *fileName) {
 
     std::unordered_map<string, int> stemmed_map = stemmer(text_map);
 
-    std::unordered_map<string, int>::iterator it = stemmed_map.begin();
+    auto it = stemmed_map.begin();
 
     string filePath = fileName;
 

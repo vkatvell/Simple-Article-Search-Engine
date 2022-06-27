@@ -5,9 +5,11 @@
 #ifndef INC_22SU_SEARCH_ENGINE_AVLTREE_H
 #define INC_22SU_SEARCH_ENGINE_AVLTREE_H
 #include <iostream>
+#include <unordered_set>
 #include <string>
 using std::cin;
 using std::cout;
+using std::unordered_set;
 
 template <typename K, typename V>
 class AVLTree {
@@ -15,7 +17,7 @@ private:
     class AVLNode {
     public:
         K key;
-        V value;
+        unordered_set<V> value;
         AVLNode* left = nullptr;
         AVLNode* right = nullptr;
         int height = 0;
@@ -65,7 +67,7 @@ AVLTree<K, V>::AVLNode::AVLNode() = default;
 template<typename K, typename V>
 AVLTree<K, V>::AVLNode::AVLNode(K givenKey, V givenValue, AVLTree::AVLNode *leftNode, AVLTree::AVLNode *rightNode, int ht) {
     this->key = givenKey;
-    this->value = givenValue;
+    this->value.operator=(givenValue); //copy constructor for unordered set
     this->left = leftNode;
     this->right = rightNode;
     this->height = ht;
@@ -94,7 +96,7 @@ void AVLTree<K,V>::insert(AVLTree<K,V>::AVLNode*& curr, const K& x, const V& v) 
     if(curr == nullptr) {
         curr = new AVLNode;
         curr->key = x;
-        curr->value = v;
+        curr->value.insert(v);
     }else if(x.compare(curr->key) < 0) { //go left (x < curr->key)
         insert(curr->left, x, v);
         //cool balancing stuff
@@ -115,7 +117,10 @@ void AVLTree<K,V>::insert(AVLTree<K,V>::AVLNode*& curr, const K& x, const V& v) 
         }
         insert(curr->right, x, v);
     }else {
-        ; //handle duplicates
+        //handle duplicates
+        if(!curr->value.find(v)) {
+            curr->value.insert(v);
+        }
         curr->height = max(getHeight(curr->left), getHeight(curr->right));
     }
 }
