@@ -45,7 +45,7 @@ private:
 
     AVLNode* nodeCopy (AVLNode* curr);
 
-    V& searchTree(AVLNode*& curr, const K&) const;
+    std::unordered_set<std::string> searchTree(AVLNode*& curr, const K&) const;
 
 public:
     //default constructor
@@ -223,7 +223,7 @@ std::unordered_set<std::string> AVLTree<K, V>::searchTree(const K& k){
 }
 
 template<typename K, typename V>
-V& AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
+std::unordered_set<std::string> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
     if(root == nullptr || root->key == k) {
         unordered_set<std::string> set = root->value;
         return set;
@@ -238,7 +238,7 @@ V& AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
         return set;
     }
     else {
-        cout << "Word not found" << std::endl;
+        //cout << "Word not found" << std::endl; //TODO THIS DOES NOT RETURN A VALUE
     }
 }
 

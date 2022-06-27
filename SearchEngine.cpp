@@ -20,6 +20,6 @@ void SearchEngine::searchForQuery(const char* query, const char* dataset) {
 
     unordered_set<string> paths;
 
-    wordIndex.searchTree(searchWord);
+    paths.operator=(wordIndex.searchTree(searchWord));
 
 }
