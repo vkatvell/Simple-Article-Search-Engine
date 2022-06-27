@@ -38,10 +38,6 @@ int main(int argc, char** argv) {
     cout << "-------------------------------------------" << endl;
     //p.testReadJsonFile("sample_data/news_0064570.json");
 
-//    cout << "\n";
-//    cout << "-------------------------------------------" << endl;
-//    cout << "------     File System Example       ------" << endl;
-//    cout << "-------------------------------------------" << endl;
 
     //p.testFileSystem("sample_data/");
 //    p.testFileSystem("/Users/noahhenson/Downloads/archive/2018_01_112b52537b67659ad3609a234388c50a");
@@ -52,18 +48,6 @@ int main(int argc, char** argv) {
 //    p.testFileSystem("/Users/venkatsvellanki/Downloads/sample_data_sets/size-10/");
 
     s.searchForQuery(argv[1], argv[2]);
-
-//    AVLTree<string, string> temp;
-//    string hold = "string";
-//    string buff = "clown";
-//    int repeat = 0;
-//    while(repeat >= 0) {
-//        cin >> hold;
-//        cin >> buff;
-//        cin >>repeat;
-//        temp.insert(hold, hold);
-//    }
-//    temp.print();
 
 
 //    string input;

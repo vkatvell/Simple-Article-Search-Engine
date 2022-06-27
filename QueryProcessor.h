@@ -15,11 +15,11 @@ private:
 
 public:
 
-std::string readingQueries(std::string& input, const char*); // stem and lowercase queries too
+std::string readingQueries(std::string& input); // stem and lowercase queries too
 
-std::string stemQuery(std::string input);
+std::string stemQuery(const std::string& input);
 
-void toLower(std::string & input);
+static void toLower(std::string & input);
 // void printResults(const char* pathtoarticle);
 
 

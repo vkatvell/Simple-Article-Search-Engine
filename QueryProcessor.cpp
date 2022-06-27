@@ -9,15 +9,13 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-std::string QueryProcessor::readingQueries(string& input, const char * arg) {
+std::string QueryProcessor::readingQueries(string& input) {
 //    const char AND[] = "AND";
 //    const char OR[] = "OR";
 //    const char NOT[] = "NOT";
 //    const char ORG[] = "ORG";
 //    const char PERSON[] = "PERSON";
 
-
-    string inputCmdLine = arg;
 
         // if statement for AND comparison
         if (input.substr(0, 3) == "AND") {
@@ -46,7 +44,9 @@ std::string QueryProcessor::readingQueries(string& input, const char * arg) {
     }
 
 
-std::string QueryProcessor::stemQuery(std::string input) {
+std::string QueryProcessor::stemQuery(const std::string& input) {
+
+    // converting string to wstring
     std::wstringstream cls; // TODO can do this without stringstream?
     cls << input.c_str();
     std::wstring total= cls.str();

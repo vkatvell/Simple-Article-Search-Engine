@@ -20,14 +20,14 @@ public:
     Parser();
     //parse json docs
     void testFileSystem(const char* path, AVLTree<string, string> &);
-    void testReadJsonFile(AVLTree<string, string> &, const char* fileName);
+    static void testReadJsonFile(AVLTree<string, string> &, const char* fileName);
     //tokenizer
-    std::unordered_map<string, int> tokenizer(string&, const string&);
+    static std::unordered_map<string, int> tokenizer(string&, const string&);
     //stop word reading + removal
-    std::unordered_map<string, int> readingStopWords(const char* stopwordsfile);
-    void removeStopWords(std::unordered_map<string, int>& source, const std::unordered_map<string, int>& stopwords);
+    static std::unordered_map<string, int> readingStopWords(const char* stopwordsfile);
+    static void removeStopWords(std::unordered_map<string, int>& source, const std::unordered_map<string, int>& stopwords);
     //stemming
-    std::unordered_map<string, int> stemmer(const std::unordered_map<string, int> & source);
+    static std::unordered_map<string, int> stemmer(const std::unordered_map<string, int> & source);
 
 };
 
