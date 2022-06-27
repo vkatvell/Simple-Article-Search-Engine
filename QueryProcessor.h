@@ -22,6 +22,7 @@ std::string stemQuery(const std::string& input);
 static void toLower(std::string & input);
 // void printResults(const char* pathtoarticle);
 
+void menuSystem();
 
 };
 
