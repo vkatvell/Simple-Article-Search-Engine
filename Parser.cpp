@@ -123,6 +123,10 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
     auto it = stemmed_map.begin();
 
     string filePath = fileName;
+    //creates a pair with string filepath and int number of frequencies in the document
+    std::pair<string, int> results;
+    results.first = fileName;
+    results.second = it->second;
 
 
     if(counter % 10000 == 0) {
@@ -131,7 +135,7 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
     }
 
     while(it != stemmed_map.end()) {
-            wordIndex.insert(it->first, filePath);
+            wordIndex.insert(it->first, results); //filepath becomes a pair with filepath and it->second
             it++;
     }
 

@@ -11,6 +11,21 @@
 using std::cin;
 using std::cout;
 using std::unordered_set;
+#include <utility>
+
+//hash function included to allow unordered sets to include pairs
+struct pair_hash
+{
+    template <class T1, class T2>
+    //overload the () operator to allow for a pair of type T1, T2
+    std::size_t operator () (std::pair<T1, T2> const &pair) const
+    {
+        std::size_t h1 = std::hash<T1>()(pair.first);
+        std::size_t h2 = std::hash<T2>()(pair.second);
+
+        return h1 ^ h2;
+    }
+};
 
 template <typename K, typename V>
 class AVLTree {
@@ -18,12 +33,12 @@ private:
     class AVLNode {
     public:
         K key;
-        unordered_set<V> value;
+        unordered_set<std::pair<V, int>, pair_hash> value; //*
         AVLNode* left = nullptr;
         AVLNode* right = nullptr;
         int height = 0;
         AVLNode();
-        AVLNode(K key, V value, AVLNode* left, AVLNode* right, int height);
+        AVLNode(K key, std::pair<V, int> value, AVLNode* left, AVLNode* right, int height); //*
     };
 
     AVLNode* root = nullptr;
@@ -32,7 +47,7 @@ private:
 
     int getHeight(AVLNode* curr);
 
-    void insert(AVLNode*& curr, const K& x, const V& v);
+    void insert(AVLNode*& curr, const K& x, const std::pair<V, int>& v); //*
 
     int max(int a, int b);
 
@@ -46,7 +61,7 @@ private:
 
     AVLNode* nodeCopy (AVLNode* curr);
 
-    std::unordered_set<std::string> searchTree(AVLNode*& curr, const K&) const;
+    unordered_set<std::pair<V, int>, pair_hash> searchTree(AVLNode*& curr, const K&) const;
 
 public:
     //default constructor
@@ -59,16 +74,16 @@ public:
     //print tree using in order
     void print();
     //insert a value into the tree
-    void insert(const K& k, const V& v);
+    void insert(const K& k, const std::pair<V,int>& v); //*
 
-    std::unordered_set<std::string> searchTree(const K& k);
+    unordered_set<std::pair<V, int>, pair_hash> searchTree(const K& k);
 };
 
 template<typename K, typename V>
 AVLTree<K, V>::AVLNode::AVLNode() = default;
 
 template<typename K, typename V>
-AVLTree<K, V>::AVLNode::AVLNode(K givenKey, V givenValue, AVLTree::AVLNode *leftNode, AVLTree::AVLNode *rightNode, int ht) {
+AVLTree<K, V>::AVLNode::AVLNode(K givenKey, std::pair<V, int> givenValue, AVLTree::AVLNode *leftNode, AVLTree::AVLNode *rightNode, int ht) {
     this->key = givenKey;
     this->value.operator=(givenValue); //copy constructor for unordered set
     this->left = leftNode;
@@ -94,7 +109,7 @@ void AVLTree<K,V>::print(AVLNode* curr) {
 }
 
 template <typename K, typename V>
-void AVLTree<K,V>::insert(AVLTree<K,V>::AVLNode*& curr, const K& x, const V& v) {
+void AVLTree<K,V>::insert(AVLTree<K,V>::AVLNode*& curr, const K& x, const std::pair<V,int>& v) {
     //if curr does not exist, create a new node
     if(curr == nullptr) {
         curr = new AVLNode;
@@ -203,7 +218,7 @@ void AVLTree<K,V>::print() {
 }
 
 template <typename K, typename V>
-void AVLTree<K,V>::insert(const K& k, const V& v) {
+void AVLTree<K,V>::insert(const K& k, const std::pair<V,int>& v) {
     insert(root, k, v);
 }
 
@@ -219,27 +234,27 @@ typename AVLTree<K,V>::AVLNode* AVLTree<K, V>::nodeCopy(AVLTree<K,V>::AVLNode *c
 }
 
 template<typename K, typename V>
-std::unordered_set<std::string> AVLTree<K, V>::searchTree(const K& k){
+unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(const K& k){
     return searchTree(root, k);
 }
 
 template<typename K, typename V>
-std::unordered_set<std::string> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
+unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
     if(curr == nullptr) {
         cout << "Word not found" << std::endl; //TODO THIS DOES NOT RETURN A VALUE
-        unordered_set<std::string> empty;
+        unordered_set<std::pair<V, int>, pair_hash> empty;
         return empty;
 
     }else if(curr->key == k) {
-        unordered_set<std::string> set = curr->value;
+        unordered_set<std::pair<V, int>, pair_hash> set = curr->value;
         return set;
     }
     else if(curr->key < k) {
-        unordered_set<std::string> set = searchTree(curr->right, k);
+        unordered_set<std::pair<V, int>, pair_hash> set = searchTree(curr->right, k);
         return set;
     }
     else {
-        unordered_set<std::string> set = searchTree(curr->left, k);
+        unordered_set<std::pair<V, int>, pair_hash> set = searchTree(curr->left, k);
         return set;
     }
 }

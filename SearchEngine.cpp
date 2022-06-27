@@ -24,7 +24,7 @@ void SearchEngine::searchForQuery(const char* query, const char* dataset) {
     string searchWord = q.readingQueries(queryString);
 
     // unordereed set to store all the paths for the word
-    unordered_set<string> paths;
+    unordered_set<std::pair<string, int>, pair_hash> paths;
 
     // setting paths to the set of the unordered set that was returned from
     // the search tree function
@@ -32,7 +32,7 @@ void SearchEngine::searchForQuery(const char* query, const char* dataset) {
 
     // printing out all possible paths for the files that the word has appeared in
     for(const auto& files : paths) {
-        cout << files << std::endl;
+        cout << files.first << ": " << files.second << std::endl;
     }
 
 }
