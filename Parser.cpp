@@ -112,8 +112,6 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
 
     removeStopWords(text_map, stopWords);
 
-
-
     std::unordered_map<string, int> stemmed_map = stemmer(text_map);
 
     auto it = stemmed_map.begin();
@@ -124,7 +122,6 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
             wordIndex.insert(it->first, filePath);
             it++;
     }
-
 
     //printing tokenized text
 //    for (const auto& i : text_map)
