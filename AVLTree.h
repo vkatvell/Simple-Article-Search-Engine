@@ -238,7 +238,7 @@ std::unordered_set<std::string> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&cur
         return set;
     }
     else {
-        //cout << "Word not found" << std::endl; //TODO THIS DOES NOT RETURN A VALUE
+        cout << "Word not found" << std::endl; //TODO THIS DOES NOT RETURN A VALUE
     }
 }
 

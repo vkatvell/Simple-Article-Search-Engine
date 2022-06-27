@@ -120,8 +120,9 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
 
     string filePath = fileName;
 
-    while(it != stemmed_map.end()) {
+    while(it != stemmed_map.end()) { // TODO STUCK HERE
             wordIndex.insert(it->first, filePath);
+            it++;
     }
 
 

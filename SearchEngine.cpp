@@ -17,9 +17,12 @@ void SearchEngine::searchForQuery(const char* query, const char* dataset) {
 
     string searchWord = q.readingQueries(temp, query);
 
-
     unordered_set<string> paths;
 
     paths.operator=(wordIndex.searchTree(searchWord));
+
+    for(auto files : paths) {
+        cout << files << std::endl;
+    }
 
 }

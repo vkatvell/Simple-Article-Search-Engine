@@ -10,6 +10,9 @@
 #include "Parser.h"
 
 class SearchEngine {
+private:
+
+public:
     void searchForQuery(const char* query, const char* dataset);
 };
 

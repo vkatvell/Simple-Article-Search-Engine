@@ -14,7 +14,7 @@
 #include "rapidjson/istreamwrapper.h"
 #include "rapidjson/document.h"
 
-#include "QueryProcessor.h"
+#include "SearchEngine.h"
 
 using namespace rapidjson;
 using std::cout;
@@ -26,9 +26,12 @@ using std::left;
 
 int main(int argc, char** argv) {
 
-    Parser p;
+//    Parser p;
+//
+//    QueryProcessor q;
 
-    QueryProcessor q;
+    SearchEngine s;
+
 
     cout << "-------------------------------------------" << endl;
     cout << "----------------- Parsing -----------------" << endl;
@@ -48,18 +51,22 @@ int main(int argc, char** argv) {
 
 //    p.testFileSystem("/Users/venkatsvellanki/Downloads/sample_data_sets/size-10/");
 
-    AVLTree<string, string> temp;
-    string hold = "string";
-    string buff = "clown";
-    int repeat = 0;
-    while(repeat >= 0) {
-        cin >> hold;
-        cin >> buff;
-        cin >>repeat;
-        temp.insert(hold, hold);
-    }
-    temp.print();
+    s.searchForQuery("investor", "/Users/venkatsvellanki/Downloads/sample_data_sets/size-10/");
+
+//    AVLTree<string, string> temp;
+//    string hold = "string";
+//    string buff = "clown";
+//    int repeat = 0;
+//    while(repeat >= 0) {
+//        cin >> hold;
+//        cin >> buff;
+//        cin >>repeat;
+//        temp.insert(hold, hold);
+//    }
+//    temp.print();
+
 
 //    string input;
 //    q.readingQueries(input, argv[1]);
+return 0;
 }
