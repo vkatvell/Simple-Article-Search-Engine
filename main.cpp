@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
 
 //    p.testFileSystem("/Users/venkatsvellanki/Downloads/sample_data_sets/size-10/");
 
-    s.searchForQuery("investor", "/Users/venkatsvellanki/Downloads/sample_data_sets/size-10/");
+    s.searchForQuery("investor", "/Users/noahhenson/Downloads/sample_data_sets/size-10");
 
 //    AVLTree<string, string> temp;
 //    string hold = "string";

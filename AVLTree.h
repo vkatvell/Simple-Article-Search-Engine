@@ -7,6 +7,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <string>
+#include <exception>
 using std::cin;
 using std::cout;
 using std::unordered_set;
@@ -224,21 +225,22 @@ std::unordered_set<std::string> AVLTree<K, V>::searchTree(const K& k){
 
 template<typename K, typename V>
 std::unordered_set<std::string> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
-    if(root == nullptr || root->key == k) {
-        unordered_set<std::string> set = root->value;
+    if(curr == nullptr || curr->key == k) {
+        unordered_set<std::string> set = curr->value;
         return set;
     }
 
-    if(root->key < k) {
-        unordered_set<std::string> set = searchTree(root->right, k);
+    if(curr->key < k) {
+        unordered_set<std::string> set = searchTree(curr->right, k);
         return set;
     }
-    else if (k < root->key) {
-        unordered_set<std::string> set = searchTree(root->left, k);
+    else if (k < curr->key) {
+        unordered_set<std::string> set = searchTree(curr->left, k);
         return set;
     }
     else {
         cout << "Word not found" << std::endl; //TODO THIS DOES NOT RETURN A VALUE
+        throw std::runtime_error("Word not found in tree");
     }
 }
 
