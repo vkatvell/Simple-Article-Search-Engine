@@ -24,7 +24,7 @@ using std::ifstream;
 using std::setw;
 using std::left;
 
-int main() {
+int main(int argc, char** argv) {
 
     Parser p;
 
@@ -59,5 +59,5 @@ int main() {
 //    temp.print();
 
     string input;
-    q.readingQueries(input);
+    q.readingQueries(input, argv[1]);
 }

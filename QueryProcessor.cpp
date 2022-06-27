@@ -9,14 +9,15 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-void QueryProcessor::readingQueries(string input) {
+void QueryProcessor::readingQueries(string input, const char * arg) {
 //    const char AND[] = "AND";
 //    const char OR[] = "OR";
 //    const char NOT[] = "NOT";
 //    const char ORG[] = "ORG";
 //    const char PERSON[] = "PERSON";
 
-    input = "AND Boston Seattle";
+    input = "Documenting";
+    string inputCmdLine = arg;
 
         // if statement for AND comparison
         if (input.substr(0, 3) == "AND") {
@@ -30,7 +31,15 @@ void QueryProcessor::readingQueries(string input) {
             string stemmedQ = stemQuery(word);
 
             cout << "The stemmed query is: " << stemmedQ << endl;
+        }
+        else {
+            string word = input.substr(0, input.length());
 
+            toLower(word);
+
+            string stemmedQ = stemQuery(word);
+
+            cout << "The stemmed query is: " << stemmedQ << endl;
         }
 
     }

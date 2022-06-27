@@ -12,6 +12,8 @@
 #include <sstream>
 #include <unordered_map>
 #include <vector>
+#include "AVLTree.h"
+#include <set>
 
 //RapidJSON headers we need for our parsing.
 #include "rapidjson/istreamwrapper.h"
@@ -110,7 +112,20 @@ void Parser::testReadJsonFile(const char *fileName) {
 
     removeStopWords(text_map, stopWords);
 
+    AVLTree<string, string> wordIndex;
+
     std::unordered_map<string, int> stemmed_map = stemmer(text_map);
+
+    std::unordered_map<string, int>::iterator it = stemmed_map.begin();
+
+    string filePath = fileName;
+
+    while(it != stemmed_map.end()) {
+        //    wordIndex.insert(it->first, filePath); //TODO figure out why insert function is giving error
+
+    }
+
+
 
     //printing tokenized text
 //    for (const auto& i : text_map)

@@ -29,7 +29,7 @@ private:
 
     int getHeight(AVLNode* curr);
 
-    void insert(AVLNode*& curr, K x);
+    void insert(AVLNode*& curr, const K& x, const V& v);
 
     int max(int a, int b);
 
@@ -53,7 +53,7 @@ public:
     //print tree using in order
     void print();
     //insert a value into the tree
-    void insert(K x);
+    void insert(const K& k, const V& v);
 };
 
 template<typename K, typename V>
@@ -84,13 +84,14 @@ void AVLTree<K,V>::print(AVLNode* curr) {
 }
 
 template <typename K, typename V>
-void AVLTree<K,V>::insert(AVLNode*& curr, K x) {
+void AVLTree<K,V>::insert(AVLTree<K,V>::AVLNode*& curr, const K& x, const V& v) {
     //if curr does not exist, create a new node
     if(curr == nullptr) {
-        curr = new AVLNode;
+        curr = new AVLTree<K,V>::AVLNode();
         curr->key = x;
+        curr->value = v;
     }else if(x.compare(curr->key) < 0) { //go left (x < curr->key)
-        insert(curr->left, x);
+        insert(curr->left, x, v);
         //cool balancing stuff
         if(getHeight(curr->left) - getHeight(curr->right) == 2) { // if avl tree does not match avl rules
             if(x < curr->left->key) {
@@ -107,7 +108,7 @@ void AVLTree<K,V>::insert(AVLNode*& curr, K x) {
                 doubleWithRightChild(curr); //case 3
             }
         }
-        insert(curr->right, x);
+        insert(curr->right, x, v);
     }else {
         ; //handle duplicates
         curr->height = max(getHeight(curr->left), getHeight(curr->right));
@@ -157,7 +158,7 @@ void AVLTree<K,V>::doubleWithLeftChild(AVLNode *&k3) {
 
 //default constructor
 template <typename K, typename V>
-AVLTree<K,V>::AVLTree() = default;
+AVLTree<K,V>::AVLTree(): root(nullptr) {}
 
 //copy constructor
 template <typename K, typename V>
@@ -189,13 +190,13 @@ void AVLTree<K,V>::print() {
 }
 
 template <typename K, typename V>
-void AVLTree<K,V>::insert(K x) {
-    insert(root, x);
+void AVLTree<K,V>::insert(const K& k, const V& v) {
+    insert(root, k, v);
 }
 
 //copies the nodes of the tree using recursion
 template<typename K, typename V>
-typename AVLTree<K,V>::AVLNode* AVLTree<K, V>::nodeCopy(AVLTree::AVLNode *curr) {
+typename AVLTree<K,V>::AVLNode* AVLTree<K, V>::nodeCopy(AVLTree<K,V>::AVLNode *curr) {
     if(curr != nullptr) {
         AVLNode* left = nodeCopy(curr->left);
         AVLNode* right = nodeCopy(curr->right);
