@@ -1,0 +1,69 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Release-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.14"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Release",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "22su_search_engine",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "22su_search_engine::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-22su_search_engine-Release-2f8da4627341bbce4d51.json",
+					"name" : "22su_search_engine",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "22su_search_engine_tests::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-22su_search_engine_tests-Release-53008d329e358edb0043.json",
+					"name" : "22su_search_engine_tests",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/noahhenson/Documents/GitHub/22su-search-engine-noah-and-venkat/cmake-build-release",
+		"source" : "/Users/noahhenson/Documents/GitHub/22su-search-engine-noah-and-venkat"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

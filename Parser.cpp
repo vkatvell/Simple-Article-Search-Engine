@@ -13,7 +13,6 @@
 #include <unordered_map>
 #include <vector>
 #include "AVLTree.h"
-#include <set>
 
 //RapidJSON headers we need for our parsing.
 #include "rapidjson/istreamwrapper.h"
@@ -118,7 +117,7 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
 
     string filePath = fileName;
 
-    while(it != stemmed_map.end()) { // TODO STUCK HERE
+    while(it != stemmed_map.end()) {
             wordIndex.insert(it->first, filePath);
             it++;
     }

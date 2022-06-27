@@ -31,7 +31,7 @@ void SearchEngine::searchForQuery(const char* query, const char* dataset) {
     paths.operator=(wordIndex.searchTree(searchWord));
 
     // printing out all possible paths for the files that the word has appeared in
-    for(auto files : paths) {
+    for(const auto& files : paths) {
         cout << files << std::endl;
     }
 

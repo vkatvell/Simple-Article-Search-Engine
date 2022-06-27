@@ -1,0 +1,6 @@
+# ninja log v5
+0	1712	1656343414389951734	CMakeFiles/22su_search_engine.dir/main.cpp.o	22faece9f2d02586
+1	1929	1656343414604626640	CMakeFiles/22su_search_engine.dir/SearchEngine.cpp.o	31aecf2e23fe5e4
+0	2394	1656343415074395893	CMakeFiles/22su_search_engine.dir/QueryProcessor.cpp.o	d3f1a28171fff7ec
+0	3534	1656343416213907033	CMakeFiles/22su_search_engine.dir/Parser.cpp.o	da1ef3662b4f3dfb
+3535	3593	1656343416276988817	22su_search_engine	209f073005ff0573
