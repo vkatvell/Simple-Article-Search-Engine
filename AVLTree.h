@@ -19,7 +19,7 @@ private:
         AVLNode* left = nullptr;
         AVLNode* right = nullptr;
         int height = 0;
-
+        AVLNode();
         AVLNode(K key, V value, AVLNode* left, AVLNode* right, int height);
     };
 
@@ -57,6 +57,9 @@ public:
 };
 
 template<typename K, typename V>
+AVLTree<K, V>::AVLNode::AVLNode() = default;
+
+template<typename K, typename V>
 AVLTree<K, V>::AVLNode::AVLNode(K givenKey, V givenValue, AVLTree::AVLNode *leftNode, AVLTree::AVLNode *rightNode, int ht) {
     this->key = givenKey;
     this->value = givenValue;
@@ -64,7 +67,6 @@ AVLTree<K, V>::AVLNode::AVLNode(K givenKey, V givenValue, AVLTree::AVLNode *left
     this->right = rightNode;
     this->height = ht;
 }
-
 
 template <typename K, typename V>
 int AVLTree<K,V>::getHeight(AVLNode* curr) {
@@ -87,7 +89,7 @@ template <typename K, typename V>
 void AVLTree<K,V>::insert(AVLTree<K,V>::AVLNode*& curr, const K& x, const V& v) {
     //if curr does not exist, create a new node
     if(curr == nullptr) {
-        curr = new AVLTree<K,V>::AVLNode();
+        curr = new AVLNode;
         curr->key = x;
         curr->value = v;
     }else if(x.compare(curr->key) < 0) { //go left (x < curr->key)

@@ -121,7 +121,7 @@ void Parser::testReadJsonFile(const char *fileName) {
     string filePath = fileName;
 
     while(it != stemmed_map.end()) {
-        //    wordIndex.insert(it->first, filePath); //TODO figure out why insert function is giving error
+        wordIndex.insert(it->first, filePath); //TODO figure out why insert function is giving error
 
     }
 
