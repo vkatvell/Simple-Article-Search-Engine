@@ -13,6 +13,7 @@ class SearchEngine {
 private:
 
 public:
+    //Controller for calling the functions of the search engine (query, indexer, parser)
     void searchForQuery(const char* query, const char* dataset);
 };
 

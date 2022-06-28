@@ -31,11 +31,11 @@ Parser::Parser() = default;
 
 
 /**
- * example code for how to traverse the filesystem using std::filesystem
+ * traverse the filesystem using std::filesystem
  * @param path an absolute or relative path to a folder containing files
  * you want to parse.
  */
-void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordIndex) {
+void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordIndex, AVLTree<string, string> & personIndex, AVLTree<string, string> & orgIndex) {
 
     //recursive_director_iterator used to "access" folder at parameter -path-
     //we are using the recursive iterator so it will go into subfolders.
@@ -43,6 +43,7 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordInde
 
     int counter = 0;
 
+    //read in stop words to be removed
     std::unordered_map<string, int> stopWords = readingStopWords("sample_data/stopwords.txt");
 
     //loop over all the entries.
@@ -52,8 +53,8 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordInde
 
         //We only want to attempt to parse files that end with .json...
         if (entry.is_regular_file() && entry.path().extension().string() == ".json") {
-            counter++;
-            testReadJsonFile(wordIndex, entry.path().c_str(), stopWords, counter);
+            counter++; //counter for total docs
+            testReadJsonFile(wordIndex, personIndex, orgIndex, entry.path().c_str(), stopWords, counter);
         }
 
     }
@@ -62,11 +63,11 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordInde
 }
 
 /**
- * example code that reads and parses a json file and extracts the title and person
+ * reads and parses a json file and extracts the title and person
  * entities.
  * @param fileName filename with relative or absolute path included.
  */
-void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *fileName, const std::unordered_map<string, int> & stopWords, int &counter) {
+void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, AVLTree<string, string> & personIndex,AVLTree<string, string> & orgIndex, const char *fileName, const std::unordered_map<string, int> & stopWords, int &counter) {
 
     //open an ifstream on the file of interest and check that it could be opened.
     ifstream input(fileName);
@@ -99,22 +100,46 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
     //We iterate over the Array returned from the line above.  Each element kind of operates like
     // a little JSON document object in that you can use the same subscript notation
     // to access particular values.
-//    cout << "  Person Entities:" << endl;
-//    for (auto& p : persons) {
-//        cout << "    > " << setw(30) << left << p["name"].GetString() << endl;
-//    }
+    std::unordered_map<string, int> person_map;
+    for (auto& p : persons) {
+        string temp = p["name"].GetString();
+        std::transform(temp.begin(), temp.end(), temp.begin(), [](unsigned char c){ return std::tolower(c); });
+        ++person_map[temp];
+    }
+
+    auto person_it = person_map.begin();
+    std::pair<string, int> p_results;
+    p_results.first = fileName;
+    while(person_it != person_map.end()) {
+        p_results.second = person_it->second;
+        personIndex.insert(person_it->first, p_results); //filepath becomes a pair with filepath and it->second
+        person_it++;
+    }
+
 
     auto organizations = d["entities"]["organizations"].GetArray();
-//    cout << " Organization Entities" << endl;
-//    for(auto& o : organizations) {
-//        cout << "    > " << setw(30) << left << o["name"].GetString() << endl;
-//    }
+    cout << " Organization Entities" << endl;
+    std::unordered_map<string, int> org_map;
+    for(auto& o : organizations) {
+        string temp = o["name"].GetString();
+        std::transform(temp.begin(), temp.end(), temp.begin(), [](unsigned char c) {return std::tolower(c);});
+        ++org_map[temp];
+    }
+
+    auto org_it = org_map.begin();
+    std::pair<string, int> o_results;
+    o_results.first = fileName;
+    while(org_it != org_map.end()) {
+        o_results.second = org_it->second;
+        orgIndex.insert(org_it->first, o_results); //filepath becomes a pair with filepath and it->second
+        org_it++;
+    }
+
+
 
     string text = d["text"].GetString();
-    //cout << text << endl;
-    std::unordered_map<string, int> text_map = tokenizer(text, " \n\t\r\f");
 
-//    std::unordered_map<string, int> stopWords = readingStopWords("sample_data/stopwords.txt"); //TODO call reading in file
+    std::unordered_map<string, int> text_map = tokenizer(text, " \n\t\r\f");
 
     removeStopWords(text_map, stopWords);
 
@@ -123,30 +148,23 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
     auto it = stemmed_map.begin();
 
     string filePath = fileName;
-    //creates a pair with string filepath and int number of frequencies in the document
 
 
 
-
+    //every 10000 documents parsed, print an * to show loading progress
     if(counter % 10000 == 0) {
         cout << "*";
         cout.flush();
     }
+
+    //creates a pair with string filepath and int number of frequencies in the document, insert into AVL Tree
     std::pair<string, int> results;
     results.first = fileName;
     while(it != stemmed_map.end()) {
         results.second = it->second;
-//        cout << results.second << endl;
         wordIndex.insert(it->first, results); //filepath becomes a pair with filepath and it->second
         it++;
     }
-
-    //printing tokenized text
-//    for (const auto& i : text_map)
-//        cout << i.first << "      " << i.second << endl;
-//    for (const auto& i : stemmed_map) //stemmed_map
-//        cout << i.first << "      " << i.second << endl;
-
 
     input.close();
 }
@@ -175,9 +193,10 @@ std::unordered_map<string, int> Parser::tokenizer(string& arg, const string& del
         first = next(second); //otherwise continue the loop
     }
 
+    //insert each string into the map
     for(string& i : hold) {
         ++umap[i];
-    }//to the first character in the string
+    }
 
     return umap;
 
@@ -187,8 +206,8 @@ std::unordered_map<string, int> Parser::tokenizer(string& arg, const string& del
 
 // reading in stop words file and returning a vector of all stopwords to remove
 std::unordered_map<string, int> Parser::readingStopWords(const char* stopwordsfile) {
-//    std::vector<string> stopVec;
 
+    //map to hold stop words
     std::unordered_map<string, int> umap;
 
     std::ifstream file_in(stopwordsfile);
@@ -197,13 +216,15 @@ std::unordered_map<string, int> Parser::readingStopWords(const char* stopwordsfi
         exit(1);
     }
 
+        //get first line of stop words file
     char buffer[100];
-        file_in.getline(buffer, 100);
+    file_in.getline(buffer, 100);
 
-        while(file_in.getline(buffer, 100)) {
-            string cmpStop(buffer);
-            umap[cmpStop]++;
-        }
+    //add stop word to the stop words map
+    while(file_in.getline(buffer, 100)) {
+        string cmpStop(buffer);
+        umap[cmpStop]++;
+    }
 
     file_in.close();
 
@@ -213,7 +234,7 @@ std::unordered_map<string, int> Parser::readingStopWords(const char* stopwordsfi
 // removing stop words from vector of strings and returning new vector of cleaned words
 void Parser::removeStopWords(std::unordered_map<string, int>& source, const std::unordered_map<string, int>& stopwords) {
 
-    //for all stop words in the list
+    //for all stop words in the list, if present in the source map, remove it
     for(const auto& itr : stopwords) {
         if((source.find(itr.first) != source.end())) {
             source.erase(itr.first);
@@ -228,6 +249,8 @@ std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string,
     std::unordered_map<string, int> umap;
     std::string sourceText;
     int val;
+
+    //collect values from the source pair for stemming
     for (const auto& itr : source) {
         sourceText = itr.first;
         val = itr.second;
@@ -252,9 +275,6 @@ std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string,
             --val;
         }
     }
-//    for(auto& itr : umap) {
-//        cout << "{" << itr.first << ": " << itr.second << "}" << endl;
-//    }
 
     return umap;
 }

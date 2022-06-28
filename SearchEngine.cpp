@@ -4,18 +4,24 @@
 
 #include "SearchEngine.h"
 
-
+/**
+ * Controller for calling the functions of search engine (query, indexer, parser)
+ * @param query
+ * @param dataset path to where data is stored
+ */
 void SearchEngine::searchForQuery(const char* query, const char* dataset) {
 
-    // creating inverted index for all of the words
+    // creating inverted index for all of the words, person, orgs
     AVLTree<string, string> wordIndex;
+    AVLTree<string, string> personIndex;
+    AVLTree<string, string> orgIndex;
 
     // creating parser object and query processor object
     Parser p;
     QueryProcessor q;
 
     // calling testFileSystem and getting all the words inserted into wordIndex
-    p.testFileSystem(dataset, wordIndex);
+    p.testFileSystem(dataset, wordIndex, personIndex, orgIndex);
 
     // making char* query into a string
     string queryString = query;

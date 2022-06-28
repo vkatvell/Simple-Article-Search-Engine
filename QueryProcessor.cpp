@@ -188,7 +188,7 @@ void QueryProcessor::menuSystem() {
 //            // creating a string with the stemmed query word
 //            string searchWord = q.readingQueries(queryString);
 //
-//            // unordereed set to store all the paths for the word
+//            // unordered set to store all the paths for the word
 //            unordered_set<std::pair<string, int>, pair_hash> paths;
 //
 //            // setting paths to the set of the unordered set that was returned from
