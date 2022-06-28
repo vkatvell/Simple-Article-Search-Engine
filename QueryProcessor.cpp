@@ -9,39 +9,153 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-std::string QueryProcessor::readingQueries(string& input) {
-//    const char AND[] = "AND";
-//    const char OR[] = "OR";
-//    const char NOT[] = "NOT";
-//    const char ORG[] = "ORG";
-//    const char PERSON[] = "PERSON";
+std::vector<std::string> QueryProcessor::readingQueries(string& input) {
+string andStr = "AND";
+string orStr = "OR";
+string notStr = "NOT";
+string orgStr = "ORG";
+string persStr = "PERSON";
 
+bool isAND = false;
+bool isOR = false;
+bool hasNOT = false;
+bool hasORG = false;
+bool hasPERSON = false;
 
-        // if statement for AND comparison
-        if (input.substr(0, 3) == "AND") {
-            cout << "Read in the AND of query only" << endl;
+std::vector<string> ANDwordsToSearch;
+std::vector<string> ORwordsToSearch;
+std::vector<string> wordsToSearch;
 
-            string word = input.substr(4, input.length());
+ANDwordsToSearch.push_back(andStr);
+ORwordsToSearch.push_back(orStr);
 
-            // converting word to lowerCase
-            toLower(word);
-
-            string stemmedQ = stemQuery(word);
-
-            cout << "The stemmed query is: " << stemmedQ << endl;
-            return stemmedQ;
+        if(input.substr(0,3) == "AND") {
+            isAND = true;
+        }
+        else if(input.substr(0,2) == "OR") {
+            isOR = true;
         }
         else {
-            string word = input.substr(0, input.length());
-
-            toLower(word);
-
-            string stemmedQ = stemQuery(word);
-
-            cout << "The stemmed query is: " << stemmedQ << endl;
-            return stemmedQ;
+            isAND = false;
+            isOR = false;
         }
-    }
+
+        std::stringstream query(input);
+
+        string indWord;
+
+        string afterNot;
+        string afterOrg;
+        string afterPerson;
+
+        if(isAND) {
+            while(query >> indWord) {
+                if(indWord == notStr) {
+                    hasNOT = true;
+                    ANDwordsToSearch.push_back(notStr);
+                    query >> afterNot;
+                    toLower(afterNot);
+                    ANDwordsToSearch.push_back(afterNot);
+                    ; // string with word after NOT
+                }
+                else if (indWord == orgStr){
+                    hasORG = true;
+                    ANDwordsToSearch.push_back(orgStr);
+                    query >> afterOrg;
+                    toLower(afterOrg);
+                    ANDwordsToSearch.push_back(afterOrg);
+                    ; // string with word after ORG
+                }
+                else if (indWord == persStr) {
+                    hasPERSON = true;
+                    ANDwordsToSearch.push_back(persStr);
+                    query >> afterPerson;
+                    toLower(afterPerson);
+                    ANDwordsToSearch.push_back(afterPerson);
+                    ; // string with word after PERSON
+                }
+                else {
+                    toLower(indWord);
+                    string stemmedQ = stemQuery(indWord);
+                    ANDwordsToSearch.push_back(indWord);
+                }
+            }
+            return ANDwordsToSearch;
+        }
+
+        if(isOR) {
+            while(query >> indWord) {
+                if(indWord == notStr) {
+                    hasNOT = true;
+                    ORwordsToSearch.push_back(notStr);
+                    query >> afterNot;
+                    toLower(afterNot);
+                    ORwordsToSearch.push_back(afterNot);
+                    ; // string with word after NOT
+                }
+                else if (indWord == orgStr){
+                    hasORG = true;
+                    ORwordsToSearch.push_back(orgStr);
+                    query >> afterOrg;
+                    toLower(afterOrg);
+                    ORwordsToSearch.push_back(afterOrg);
+                    ; // string with word after ORG
+                }
+                else if (indWord == persStr) {
+                    hasPERSON = true;
+                    ORwordsToSearch.push_back(persStr);
+                    query >> afterPerson;
+                    toLower(afterPerson);
+                    ORwordsToSearch.push_back(afterPerson);
+                    ; // string with word after PERSON
+                }
+                else {
+                    toLower(indWord);
+                    string stemmedQ = stemQuery(indWord);
+                    ORwordsToSearch.push_back(stemmedQ);
+                }
+            }
+             return ORwordsToSearch;
+        }
+
+        if(isAND == false && isOR == false) {
+            while (query >> indWord) {
+                if (indWord == notStr) {
+                    hasNOT = true;
+                    wordsToSearch.push_back(notStr);
+                    query >> afterNot;
+                    toLower(afterNot);
+                    wordsToSearch.push_back(afterNot);; // string with word after NOT
+                } else if (indWord == orgStr) {
+                    hasORG = true;
+                    wordsToSearch.push_back(orgStr);
+                    query >> afterOrg;
+                    toLower(afterOrg);
+                    wordsToSearch.push_back(afterOrg);; // string with word after ORG
+                } else if (indWord == persStr) {
+                    hasPERSON = true;
+                    wordsToSearch.push_back(persStr);
+                    query >> afterPerson;
+                    toLower(afterPerson);
+                    wordsToSearch.push_back(afterPerson);; // string with word after PERSON
+                } else {
+                    toLower(indWord);
+                    string stemmedQ = stemQuery(indWord);
+                    wordsToSearch.push_back(stemmedQ);
+                }
+            }
+             return wordsToSearch;
+        }
+
+//            string word = input.substr(0, input.length());
+//
+//            toLower(word);
+//
+//            string stemmedQ = stemQuery(word);
+//
+//            cout << "The stemmed query is: " << stemmedQ << endl;
+//            return stemmedQ;
+}
 
 
 std::string QueryProcessor::stemQuery(const std::string& input) {
@@ -76,17 +190,15 @@ void QueryProcessor::menuSystem() {
     bool continue_running = true;
 
     while(continue_running) {
-        cout << "1. Clear current index" << endl;
-        cout << "2. Parse a new dataset" << endl;
-        cout << "3. Read 15 articles from dataset" << endl;
-        cout << "4. Enter a query" << endl;
-        cout << "-1. Exit Search Engine program" << endl;
+        cout << "A. Parse a new dataset" << endl;
+        cout << "B. Enter a query" << endl;
+        cout << "E. Exit Search Engine program" << endl;
 
         // reading in user input for menu value
-        int input{0};
+        char input;
         cin >> input;
 
-        if(input == -1) {
+        if(input == 'E') {
             continue_running = false;
         } // end menu option -1
 
@@ -96,8 +208,8 @@ void QueryProcessor::menuSystem() {
             break;
         }
 
-        // 1. clearing current index
-        if(input == 1) {
+        // 1. parsing new dataset
+        if(input == 'A') {
             // clear wordIndex, peopleIndex, orgIndex
 
             // parse new dataset
@@ -111,78 +223,25 @@ void QueryProcessor::menuSystem() {
             // continue and reprint menu
         } // end menu option 1
 
-        // 2. parse a new dataset
-        if(input == 2) {
 
-            AVLTree<string, string> wordIndex;
-
-            Parser p;
-
-            // parse new dataset
-            cout << "Enter path to a new dataset to parse: ";
-            string newPath;
-
-            cin >> newPath;
-
-            p.testFileSystem(newPath.c_str(), wordIndex);
-            // call parser test file system function and pass in new empty avl trees for
-            // three indexes
-
-            // continue and reprint menu
-        } // end menu option 2
-
-        // 3. read top 15 files
-        if (input == 3) {
-            cout << "15 articles from dataset to peruse:" << endl;
-            // //open an ifstream on the file of interest and check that it could be opened.
-            //    ifstream input(fileName);
-            //    if(!input.is_open())
-            //        std::cerr << "cannot open file" << endl;
-            //
-            //    //Create a RapidJSON IStreamWrapper using the file input stream above.
-            //    IStreamWrapper isw(input);
-            //
-            //    //Create a RapidJSON Document object and use it to parse the IStreamWrapper object above.
-            //    Document d;
-            //    d.ParseStream(isw);
-            //
-            //    //Now that the document is parsed, we can access different elements the JSON using
-            //    //familiar subscript notation.
-            //
-            //    //This accesses the -title- element in the JSON. Since the value associated with title is a string (rather than
-            //    // an array or something else), we call the GetString() function to return the actual title of the article
-            //    // as a c-string.
-            //    //
-            //    auto val = d["title"].GetString();
-            ////    cout << "Title: " << val << endl;
-            //
-            //    //The Persons entity for which you're building a specific inverted index is contained in
-            //    // top level -entities- element.  So that's why we subscript with ["entities"]["persons"].
-            //    // The value associated with entities>persons is an array.  So we call GetArray() to get
-            //    // an iterable collection of elements
-            //    auto persons = d["entities"]["persons"].GetArray();
-            //
-            //    //We iterate over the Array returned from the line above.  Each element kind of operates like
-            //    // a little JSON document object in that you can use the same subscript notation
-            //    // to access particular values.
-            ////    cout << "  Person Entities:" << endl;
-            ////    for (auto& p : persons) {
-            ////        cout << "    > " << setw(30) << left << p["name"].GetString() << endl;
-            ////    }
-            //
-            //    auto organizations = d["entities"]["organizations"].GetArray();
-            ////    cout << " Organization Entities" << endl;
-            ////    for(auto& o : organizations) {
-            ////        cout << "    > " << setw(30) << left << o["name"].GetString() << endl;
-            ////    }
-            //
-            //    string text = d["text"].GetString();
-            //    //cout << text << endl;
-        } // end menu option 3
-
-        if(input == 4) {
+       // goal search queries:
+       // markets
+       // AND social network
+       // AND social network PERSON cramer
+       // AND social network ORG facebook PERSON cramer
+       // OR snap facebook
+       // OR facebook meta NOT profits
+       // bankruptcy NOT facebook
+       // OR facebook instagram NOT bankruptcy ORG snap PERSON cramer
+        if(input == 'B') {
             cout << "Enter a query: ";
+            string query;
+
+            getline(cin, query);
             // call readingQueries function
+            std::vector<string> wordsToSearch = readingQueries(query);
+
+
 
             // then call searchTree function for the search string
 //            // creating a string with the stemmed query word
@@ -212,7 +271,7 @@ void QueryProcessor::menuSystem() {
                     cout << "Invalid entry. Please try again." << endl;
                     cin >> input;
                 }
-        } // end menu option 4
+        } // end menu option 2
 
 
     } // end while loop
