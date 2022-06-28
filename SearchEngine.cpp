@@ -10,6 +10,7 @@
  * @param dataset path to where data is stored
  */
 void SearchEngine::searchForQuery(const char* query, const char* dataset) {
+    int count = 0;
 
     // creating inverted index for all of the words, person, orgs
     AVLTree<string, string> wordIndex;
@@ -21,7 +22,7 @@ void SearchEngine::searchForQuery(const char* query, const char* dataset) {
     QueryProcessor q;
 
     // calling testFileSystem and getting all the words inserted into wordIndex
-    p.testFileSystem(dataset, wordIndex, personIndex, orgIndex);
+    p.testFileSystem(dataset, wordIndex, personIndex, orgIndex, count);
 
     // making char* query into a string
     string queryString = query;

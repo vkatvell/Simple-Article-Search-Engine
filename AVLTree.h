@@ -4,6 +4,7 @@
 
 #ifndef INC_22SU_SEARCH_ENGINE_AVLTREE_H
 #define INC_22SU_SEARCH_ENGINE_AVLTREE_H
+
 #include <iostream>
 #include <unordered_set>
 #include <string>
@@ -62,9 +63,8 @@ private:
 
     //return a new copy of the node
     AVLNode* nodeCopy (AVLNode* curr);
-    //recursively search the avl tree for a certain key
-    unordered_set<std::pair<V, int>, pair_hash> searchTree(AVLNode*& curr, const K&) const;
-
+    //recursively search the avl tree for a certain key```
+    unordered_set<std::pair<V, int>, pair_hash> searchTree(AVLNode*& curr, const K&);
 public:
     //default constructor
     AVLTree();
@@ -336,9 +336,9 @@ unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(const K& k
  * @return returns a set of the value pairs being stored by the key
  */
 template<typename K, typename V>
-unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) const {
+unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) {
     if(curr == nullptr) { //base condition, has searched the tree and cannot find an equivalent value
-        cout << "Word not found" << std::endl; //TODO THIS DOES NOT RETURN A VALUE
+        cout << "Word not found" << std::endl;
         unordered_set<std::pair<V, int>, pair_hash> empty;
         return empty;
     }else if(curr->key == k) { //if the key has been found, copy the set and return it

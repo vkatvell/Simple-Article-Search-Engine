@@ -19,7 +19,7 @@ public:
     //default constructor
     Parser();
     //parse json docs
-    void testFileSystem(const char* path, AVLTree<string, string> &, AVLTree<string, string> &, AVLTree<string, string> &);
+    void testFileSystem(const char* path, AVLTree<string, string> &, AVLTree<string, string> &, AVLTree<string, string> &, int&);
     static void testReadJsonFile(AVLTree<string, string> &, AVLTree<string, string> &, AVLTree<string, string> &, const char* fileName,const std::unordered_map<string, int>& stopWords, int &counter);
     //tokenizer
     static std::unordered_map<string, int> tokenizer(string&, const string&);
