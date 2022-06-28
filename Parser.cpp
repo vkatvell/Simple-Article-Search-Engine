@@ -124,19 +124,21 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, const char *f
 
     string filePath = fileName;
     //creates a pair with string filepath and int number of frequencies in the document
-    std::pair<string, int> results;
-    results.first = fileName;
-    results.second = it->second;
+
+
 
 
     if(counter % 10000 == 0) {
         cout << "*";
         cout.flush();
     }
-
+    std::pair<string, int> results;
+    results.first = fileName;
     while(it != stemmed_map.end()) {
-            wordIndex.insert(it->first, results); //filepath becomes a pair with filepath and it->second
-            it++;
+        results.second = it->second;
+//        cout << results.second << endl;
+        wordIndex.insert(it->first, results); //filepath becomes a pair with filepath and it->second
+        it++;
     }
 
     //printing tokenized text
@@ -176,6 +178,7 @@ std::unordered_map<string, int> Parser::tokenizer(string& arg, const string& del
     for(string& i : hold) {
         ++umap[i];
     }//to the first character in the string
+
     return umap;
 
 
@@ -249,6 +252,9 @@ std::unordered_map<string, int> Parser::stemmer(const std::unordered_map<string,
             --val;
         }
     }
+//    for(auto& itr : umap) {
+//        cout << "{" << itr.first << ": " << itr.second << "}" << endl;
+//    }
 
     return umap;
 }
