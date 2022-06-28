@@ -182,7 +182,7 @@ void QueryProcessor::toLower(string &input) {
                    [](unsigned char c){ return std::tolower(c); });
 }
 
-void QueryProcessor::menuSystem() {
+void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<string, string> &person, AVLTree<string, string> &orgs) {
     // parse dataset first before calling this function
 
     cout << "Welcome to Noah and Venkat's Financial Article Search Engine" << endl;
@@ -241,22 +241,229 @@ void QueryProcessor::menuSystem() {
             // call readingQueries function
             std::vector<string> wordsToSearch = readingQueries(query);
 
+            bool isAND = false;
+            bool isOR = false;
+
+            // first word of the vector is either AND, OR, or neither
+            // so setting booleans for each case
+            if(wordsToSearch[0] == "AND") {
+                isAND = true;
+            } else if(wordsToSearch[0] == "OR") {
+                isOR = true;
+            }
+            else {
+                isAND = false;
+                isOR = false;
+            }
+
+            // doing set operations if vector is AND case
+            if(isAND == true && isOR == false) {
+
+                // afterNot is the word that appears after NOT operator
+                string afterNot;
+
+                // afterPerson is the person that appears after PERSON operator
+                string afterPerson;
+
+                // afterOrg is the organization that appears after ORG operator
+                string afterOrg;
 
 
-            // then call searchTree function for the search string
-//            // creating a string with the stemmed query word
-//            string searchWord = q.readingQueries(queryString);
-//
-//            // unordered set to store all the paths for the word
-//            unordered_set<std::pair<string, int>, pair_hash> paths;
-//
-//            // setting paths to the set of the unordered set that was returned from
-//            // the search tree function
-//            paths.operator=(wordIndex.searchTree(searchWord));
+                // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
+                // then performs set intersection
+                int i = 2;
 
-            // use relevancy ranking to print results with paths as input and
+                unordered_set<std::pair<string, int>, pair_hash> paths;
+
+                paths.operator=(wordIndex.searchTree(wordsToSearch[1]));
+
+                while (wordsToSearch[i] != "NOT" || wordsToSearch[i] != "PERSON" || wordsToSearch[i] != "ORG") {
+
+                    // set intersection using for loop
+                    unordered_set<std::pair<string, int>, pair_hash> temp;
+
+                    // setting paths to the set of the unordered set that was returned from
+                    // the search tree function
+                    temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+
+                    auto temp_end = temp.end();
+                    for(auto pairs = temp.begin(); pairs != temp_end; ++pairs) {
+                        for(auto pathsPair = paths.begin(); pathsPair != paths.end(); ++pathsPair) {
+                        auto it = std::find_if(paths.begin(), paths.end(),
+                                               [&pairs](auto& el){ return el.first == pairs->first; });
+                            if(it == paths.end()) {
+                                ;
+                            }
+                            else {
+                                paths.erase(it);
+                            }
+                        }
+                    }
+                    i++;
+                }
+
+                // getting the words after NOT, PERSON, and ORG
+                std::vector<string>::iterator itNot;
+                itNot = std::find(wordsToSearch.begin(), wordsToSearch.end(), "NOT");
+                if(itNot != wordsToSearch.end()) {
+                    afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
+                }
+                //TODO SET SUBTRACTION WITH ALL TERMS AFTER NOT
+
+                std::vector<string>::iterator itPerson;
+                itPerson = std::find(wordsToSearch.begin(), wordsToSearch.end(), "PERSON");
+                if(itPerson != wordsToSearch.end()) {
+                    afterPerson = wordsToSearch[(itPerson - wordsToSearch.begin()) + 1];
+                }
+                unordered_set<std::pair<string, int>, pair_hash> personPaths;
+                personPaths.operator=(person.searchTree(afterPerson));
+                //TODO intersection with person index paths
+
+                std::vector<string>::iterator itOrg;
+                itOrg = std::find(wordsToSearch.begin(), wordsToSearch.end(), "ORG");
+                if(itOrg != wordsToSearch.end()) {
+                    afterOrg = wordsToSearch[(itOrg - wordsToSearch.begin()) + 1];
+                }
+                unordered_set<std::pair<string, int>, pair_hash> orgPaths;
+                orgPaths.operator=(orgs.searchTree(afterOrg));
+                //TODO interesection with org index paths
+            }
+
+            // doing operations if set operation is OR case
+            else if(isOR == true && isAND == false) {
+
+                // afterNot is the word that appears after NOT operator
+                string afterNot;
+
+                // afterPerson is the person that appears after PERSON operator
+                string afterPerson;
+
+                // afterOrg is the organization that appears after ORG operator
+                string afterOrg;
+
+
+                // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
+                // then performs set intersection
+                int i = 2;
+
+                unordered_set<std::pair<string, int>, pair_hash> paths;
+
+                paths.operator=(wordIndex.searchTree(wordsToSearch[1]));
+
+                while (wordsToSearch[i] != "NOT" || wordsToSearch[i] != "PERSON" || wordsToSearch[i] != "ORG") {
+
+                    // set union using for loop
+                    unordered_set<std::pair<string, int>, pair_hash> temp;
+
+                    // setting temp to the set of the unordered set that was returned from
+                    // the search tree function
+                    temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+
+                    auto temp_end = temp.end();
+                    for(auto pairs = temp.begin(); pairs != temp_end; ++pairs) {
+                        for(auto pathsPair = paths.begin(); pathsPair != paths.end(); ++pathsPair) {
+                            auto it = std::find_if(paths.begin(), paths.end(),
+                                                   [&pairs](auto& el){ return el.first == pairs->first; });
+                            if(it == paths.end()) {
+                                std::pair<string, int> newPair;
+                                newPair.first = pairs->first;
+                                newPair.second = pairs->second;
+                                paths.insert(newPair);
+                            }
+                            else {
+                                ; // do nothing
+                            }
+                        }
+                    }
+                    i++;
+                }
+
+                // getting the words after NOT, PERSON, and ORG
+                std::vector<string>::iterator itNot;
+                itNot = std::find(wordsToSearch.begin(), wordsToSearch.end(), "NOT");
+                if(itNot != wordsToSearch.end()) {
+                    afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
+                }
+
+                //TODO SET SUBTRACTION WITH ALL TERMS AFTER NOT
+
+                std::vector<string>::iterator itPerson;
+                itPerson = std::find(wordsToSearch.begin(), wordsToSearch.end(), "PERSON");
+                if(itPerson != wordsToSearch.end()) {
+                    afterPerson = wordsToSearch[(itPerson - wordsToSearch.begin()) + 1];
+                }
+                unordered_set<std::pair<string, int>, pair_hash> personPaths;
+                personPaths.operator=(person.searchTree(afterPerson));
+                //TODO union with person index paths
+
+                std::vector<string>::iterator itOrg;
+                itOrg = std::find(wordsToSearch.begin(), wordsToSearch.end(), "ORG");
+                if(itOrg != wordsToSearch.end()) {
+                    afterOrg = wordsToSearch[(itOrg - wordsToSearch.begin()) + 1];
+                }
+                unordered_set<std::pair<string, int>, pair_hash> orgPaths;
+                orgPaths.operator=(orgs.searchTree(afterOrg));
+                //TODO union with org index paths
+            }
+
+
+            if(isAND == false && isOR == false) {
+                // afterNot is the word that appears after NOT operator
+                string afterNot;
+
+                // afterPerson is the person that appears after PERSON operator
+                string afterPerson;
+
+                // afterOrg is the organization that appears after ORG operator
+                string afterOrg;
+
+
+                // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
+                // then performs set intersection
+                int i = 1;
+
+                unordered_set<std::pair<string, int>, pair_hash> paths;
+
+                while (wordsToSearch[i] != "NOT" || wordsToSearch[i] != "PERSON" || wordsToSearch[i] != "ORG") {
+
+                    paths.operator=(wordIndex.searchTree(wordsToSearch[i]));
+
+                    // getting the words after NOT, PERSON, and ORG
+                    std::vector<string>::iterator itNot;
+                    itNot = std::find(wordsToSearch.begin(), wordsToSearch.end(), "NOT");
+                    if(itNot != wordsToSearch.end()) {
+                        afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
+                    }
+
+                    //TODO SET SUBTRACTION FOR ALL TERMS AFTER NOT
+
+                    std::vector<string>::iterator itPerson;
+                    itPerson = std::find(wordsToSearch.begin(), wordsToSearch.end(), "PERSON");
+                    if(itPerson != wordsToSearch.end()) {
+                        afterPerson = wordsToSearch[(itPerson - wordsToSearch.begin()) + 1];
+                    }
+                    unordered_set<std::pair<string, int>, pair_hash> personPaths;
+                    personPaths.operator=(person.searchTree(afterPerson));
+                    //TODO if after NOT subtract set from wordIndex paths
+
+                    std::vector<string>::iterator itOrg;
+                    itOrg = std::find(wordsToSearch.begin(), wordsToSearch.end(), "ORG");
+                    if(itOrg != wordsToSearch.end()) {
+                        afterOrg = wordsToSearch[(itOrg - wordsToSearch.begin()) + 1];
+                    }
+                    unordered_set<std::pair<string, int>, pair_hash> orgPaths;
+                    orgPaths.operator=(orgs.searchTree(afterOrg));
+                    //TODO if after NOT subtract set org from wordIndex paths
+
+                    i++;
+                }
+
+            }
+
+
+
+            //TODO use relevancy ranking to print results with paths as input and
             // then list out all possible articles names with associated number menu to read particular article
-            // (SIMILAR TO 3rd MENU OPTION)
 
             // print statistics
                 // - Total number of articles indexed
