@@ -68,6 +68,148 @@ void QueryProcessor::toLower(string &input) {
                    [](unsigned char c){ return std::tolower(c); });
 }
 
+void QueryProcessor::menuSystem() {
+    // parse dataset first before calling this function
+
+    cout << "Welcome to Noah and Venkat's Financial Article Search Engine" << endl;
+
+    bool continue_running = true;
+
+    while(continue_running) {
+        cout << "1. Clear current index" << endl;
+        cout << "2. Parse a new dataset" << endl;
+        cout << "3. Read 15 articles from dataset" << endl;
+        cout << "4. Enter a query" << endl;
+        cout << "-1. Exit Search Engine program" << endl;
+
+        // reading in user input for menu value
+        int input{0};
+        cin >> input;
+
+        if(input == -1) {
+            continue_running = false;
+        } // end menu option -1
+
+        // ending program if user selects -1 option
+        if(!continue_running) {
+            cout << "Thank you for searching. Goodbye..." << endl;
+            break;
+        }
+
+        // 1. clearing current index
+        if(input == 1) {
+            // clear wordIndex, peopleIndex, orgIndex
+
+            // parse new dataset
+            cout << "Enter path to a new dataset to parse: ";
+            string newPath;
+
+            cin >> newPath;
+            // call parser test file system function and pass in new empty avl trees for
+            // three indexes
+
+            // continue and reprint menu
+        } // end menu option 1
+
+        // 2. parse a new dataset
+        if(input == 2) {
+            // parse new dataset
+            cout << "Enter path to a new dataset to parse: ";
+            string newPath;
+
+            cin >> newPath;
+            // call parser test file system function and pass in new empty avl trees for
+            // three indexes
+
+            // continue and reprint menu
+        } // end menu option 2
+
+        // 3. read top 15 files
+        if (input == 3) {
+            cout << "15 articles from dataset to peruse:" << endl;
+            // //open an ifstream on the file of interest and check that it could be opened.
+            //    ifstream input(fileName);
+            //    if(!input.is_open())
+            //        std::cerr << "cannot open file" << endl;
+            //
+            //    //Create a RapidJSON IStreamWrapper using the file input stream above.
+            //    IStreamWrapper isw(input);
+            //
+            //    //Create a RapidJSON Document object and use it to parse the IStreamWrapper object above.
+            //    Document d;
+            //    d.ParseStream(isw);
+            //
+            //    //Now that the document is parsed, we can access different elements the JSON using
+            //    //familiar subscript notation.
+            //
+            //    //This accesses the -title- element in the JSON. Since the value associated with title is a string (rather than
+            //    // an array or something else), we call the GetString() function to return the actual title of the article
+            //    // as a c-string.
+            //    //
+            //    auto val = d["title"].GetString();
+            ////    cout << "Title: " << val << endl;
+            //
+            //    //The Persons entity for which you're building a specific inverted index is contained in
+            //    // top level -entities- element.  So that's why we subscript with ["entities"]["persons"].
+            //    // The value associated with entities>persons is an array.  So we call GetArray() to get
+            //    // an iterable collection of elements
+            //    auto persons = d["entities"]["persons"].GetArray();
+            //
+            //    //We iterate over the Array returned from the line above.  Each element kind of operates like
+            //    // a little JSON document object in that you can use the same subscript notation
+            //    // to access particular values.
+            ////    cout << "  Person Entities:" << endl;
+            ////    for (auto& p : persons) {
+            ////        cout << "    > " << setw(30) << left << p["name"].GetString() << endl;
+            ////    }
+            //
+            //    auto organizations = d["entities"]["organizations"].GetArray();
+            ////    cout << " Organization Entities" << endl;
+            ////    for(auto& o : organizations) {
+            ////        cout << "    > " << setw(30) << left << o["name"].GetString() << endl;
+            ////    }
+            //
+            //    string text = d["text"].GetString();
+            //    //cout << text << endl;
+        } // end menu option 3
+
+        if(input == 4) {
+            cout << "Enter a query: ";
+            // call readingQueries function
+
+            // then call searchTree function for the search string
+//            // creating a string with the stemmed query word
+//            string searchWord = q.readingQueries(queryString);
+//
+//            // unordereed set to store all the paths for the word
+//            unordered_set<std::pair<string, int>, pair_hash> paths;
+//
+//            // setting paths to the set of the unordered set that was returned from
+//            // the search tree function
+//            paths.operator=(wordIndex.searchTree(searchWord));
+
+            // use relevancy ranking to print results with paths as input and
+            // then list out all possible articles names with associated number menu to read particular article
+            // (SIMILAR TO 3rd MENU OPTION)
+
+            // print statistics
+                // - Total number of articles indexed
+                // - Total words indexed (nodes in the wordIndex avl tree)
+                // - ...timing data???
+                cout << "0. Return to Menu" << endl;
+                cin >> input;
+                if(input == 0) {
+                    continue;
+                }
+        } // end menu option 4
+
+
+    } // end while loop
+
+
+
+} // end function
+
 // examples from class with stringstream
     /*
      * stringstream ss;
