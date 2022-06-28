@@ -113,11 +113,18 @@ void QueryProcessor::menuSystem() {
 
         // 2. parse a new dataset
         if(input == 2) {
+
+            AVLTree<string, string> wordIndex;
+
+            Parser p;
+
             // parse new dataset
             cout << "Enter path to a new dataset to parse: ";
             string newPath;
 
             cin >> newPath;
+
+            p.testFileSystem(newPath.c_str(), wordIndex);
             // call parser test file system function and pass in new empty avl trees for
             // three indexes
 
@@ -200,6 +207,10 @@ void QueryProcessor::menuSystem() {
                 cin >> input;
                 if(input == 0) {
                     continue;
+                }
+                else {
+                    cout << "Invalid entry. Please try again." << endl;
+                    cin >> input;
                 }
         } // end menu option 4
 

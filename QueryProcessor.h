@@ -9,6 +9,7 @@
 #include "olestem/stemming/english_stem.h"
 #include <algorithm>
 #include <sstream>
+#include "Parser.h"
 
 class QueryProcessor {
 private:
