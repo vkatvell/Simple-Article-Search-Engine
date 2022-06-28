@@ -35,13 +35,11 @@ Parser::Parser() = default;
  * @param path an absolute or relative path to a folder containing files
  * you want to parse.
  */
-void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordIndex, AVLTree<string, string> & personIndex, AVLTree<string, string> & orgIndex) {
+void Parser::testFileSystem(const char *path, AVLTree<string, string> & wordIndex, AVLTree<string, string> & personIndex, AVLTree<string, string> & orgIndex, int &counter) {
 
     //recursive_director_iterator used to "access" folder at parameter -path-
     //we are using the recursive iterator so it will go into subfolders.
     auto it = std::filesystem::recursive_directory_iterator(path);
-
-    int counter = 0;
 
     //read in stop words to be removed
     std::unordered_map<string, int> stopWords = readingStopWords("sample_data/stopwords.txt");
