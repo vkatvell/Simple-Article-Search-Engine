@@ -340,7 +340,7 @@ unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(const K& k
 template<typename K, typename V>
 unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(AVLTree::AVLNode *&curr, const K & k) {
     if(curr == nullptr) { //base condition, has searched the tree and cannot find an equivalent value
-        cout << "Word not found" << std::endl;
+//        cout << "Word not found" << std::endl;
         unordered_set<std::pair<V, int>, pair_hash> empty;
         return empty;
     }else if(curr->key == k) { //if the key has been found, copy the set and return it
