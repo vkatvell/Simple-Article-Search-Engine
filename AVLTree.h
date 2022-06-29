@@ -65,6 +65,8 @@ private:
     AVLNode* nodeCopy (AVLNode* curr);
     //recursively search the avl tree for a certain key```
     unordered_set<std::pair<V, int>, pair_hash> searchTree(AVLNode*& curr, const K&);
+    //find size of the tree
+    int getSize(AVLNode*&);
 public:
     //default constructor
     AVLTree();
@@ -79,6 +81,8 @@ public:
     void insert(const K& k, const std::pair<V,int>& v);
     //search the key
     unordered_set<std::pair<V, int>, pair_hash> searchTree(const K& k);
+    //return the size of the tree
+    int getSize();
 };
 
 //default constructor
@@ -355,6 +359,19 @@ unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(AVLTree::A
         unordered_set<std::pair<V, int>, pair_hash> set = searchTree(curr->left, k);
         return set;
     }
+}
+
+template<typename K, typename V>
+int AVLTree<K, V>::getSize(AVLTree::AVLNode *& curr) {
+    if(curr == nullptr)
+        return 0;
+    else
+        return (getSize(curr->left) + getSize(curr->right) + 1);
+}
+
+template<typename K, typename V>
+int AVLTree<K, V>::getSize() {
+    return getSize(root);
 }
 
 #endif //INC_22SU_SEARCH_ENGINE_AVLTREE_H
