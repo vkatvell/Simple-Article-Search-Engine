@@ -36,6 +36,7 @@ std::vector<std::pair<string, int>> eliminateVectorDupes(std::vector<std::pair<s
 
 void resultArticles(const string& inputPath);
 
+
 };
 
 
