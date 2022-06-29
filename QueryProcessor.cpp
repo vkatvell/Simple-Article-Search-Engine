@@ -53,6 +53,7 @@ bool hasPERSON = false;
 std::vector<string> ANDwordsToSearch;
 std::vector<string> ORwordsToSearch;
 std::vector<string> wordsToSearch;
+std::vector<string> empty;
 
 //ANDwordsToSearch.push_back(andStr);
 //ORwordsToSearch.push_back(orStr);
@@ -76,8 +77,35 @@ std::vector<string> wordsToSearch;
         string afterOrg;
         string afterPerson;
 
-        // AND case
-        if(isAND && !isOR) {
+        if(!isAND && !isOR) {
+            while (query >> indWord) {
+                if (indWord == notStr) {
+                    hasNOT = true;
+                    wordsToSearch.push_back(notStr);
+                    query >> afterNot;
+                    toLower(afterNot);
+                    wordsToSearch.push_back(afterNot); // string with word after NOT
+                } else if (indWord == orgStr) {
+                    hasORG = true;
+                    wordsToSearch.push_back(orgStr);
+                    query >> afterOrg;
+                    toLower(afterOrg);
+                    wordsToSearch.push_back(afterOrg); // string with word after ORG
+                } else if (indWord == persStr) {
+                    hasPERSON = true;
+                    wordsToSearch.push_back(persStr);
+                    query >> afterPerson;
+                    toLower(afterPerson);
+                    wordsToSearch.push_back(afterPerson); // string with word after PERSON
+                } else {
+                    toLower(indWord);
+                    string stemmedQ = stemQuery(indWord);
+                    wordsToSearch.push_back(stemmedQ);
+                }
+            }
+             return wordsToSearch;
+        }
+        else if(isAND && !isOR) {
             while(query >> indWord) {
                 if(indWord == notStr) {
                     hasNOT = true;
@@ -144,46 +172,11 @@ std::vector<string> wordsToSearch;
                     ORwordsToSearch.push_back(stemmedQ);
                 }
             }
-             return ORwordsToSearch;
+            return ORwordsToSearch;
         }
-
-        if(!isAND && !isOR) {
-            while (query >> indWord) {
-                if (indWord == notStr) {
-                    hasNOT = true;
-                    wordsToSearch.push_back(notStr);
-                    query >> afterNot;
-                    toLower(afterNot);
-                    wordsToSearch.push_back(afterNot); // string with word after NOT
-                } else if (indWord == orgStr) {
-                    hasORG = true;
-                    wordsToSearch.push_back(orgStr);
-                    query >> afterOrg;
-                    toLower(afterOrg);
-                    wordsToSearch.push_back(afterOrg); // string with word after ORG
-                } else if (indWord == persStr) {
-                    hasPERSON = true;
-                    wordsToSearch.push_back(persStr);
-                    query >> afterPerson;
-                    toLower(afterPerson);
-                    wordsToSearch.push_back(afterPerson); // string with word after PERSON
-                } else {
-                    toLower(indWord);
-                    string stemmedQ = stemQuery(indWord);
-                    wordsToSearch.push_back(stemmedQ);
-                }
-            }
-             return wordsToSearch;
+        else {
+            return empty;
         }
-
-//            string word = input.substr(0, input.length());
-//
-//            toLower(word);
-//
-//            string stemmedQ = stemQuery(word);
-//
-//            cout << "The stemmed query is: " << stemmedQ << endl;
-//            return stemmedQ;
 }
 
 
