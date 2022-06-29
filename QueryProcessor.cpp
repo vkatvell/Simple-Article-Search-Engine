@@ -3,7 +3,8 @@
 //
 
 #include "QueryProcessor.h"
-
+#include <chrono>
+using namespace std::chrono;
 using std::string;
 using std::cin;
 using std::cout;
@@ -203,6 +204,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
     while(continue_running) {
         cout << "a. Parse a new dataset" << endl;
         cout << "b. Enter a query" << endl;
+        cout << "c. Display number of unique organizations and persons" << endl;
         cout << "e. Exit Search Engine program" << endl;
 
         // reading in user input for menu value
@@ -210,7 +212,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         cin >> input;
 
         while(true) {
-            if(input != 'A' && input != 'a' && input != 'b' && input != 'B' && input != 'e' && input != 'E') {
+            if(input != 'A' && input != 'a' && input != 'b' && input != 'B' && input != 'c' && input != 'C'&& input != 'e' && input != 'E') {
                 cout << "Invalid input. Please try again." << endl;
                 cin >> input;
                 continue;
@@ -249,9 +251,14 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             cin >> newPath;
             // call parser test file system function and pass in new empty avl trees for
             // three indexes
+            auto start = high_resolution_clock::now();
             p.testFileSystem(newPath.c_str(), newWordIndex, newPersonIndex, newOrgIndex, newCount);
+            auto stop = high_resolution_clock::now();
+            auto timeToExecMilli = duration_cast<milliseconds>(stop - start);
+            auto timeToExecSec = duration_cast<seconds>(stop - start);
+            auto timeToExecMin = duration_cast<minutes>(stop - start);
             // continue and reprint menu
-            cout << "Done parsing new dataset. Returning you to main menu..." << endl;
+            cout << "Done parsing new dataset. Time to parse: " << timeToExecMin.count() << " min " << timeToExecSec.count()%60 << " sec " << timeToExecMilli.count()%1000 << " ms. \nReturning you to main menu..." << endl;
             menuSystem(newWordIndex, newPersonIndex, newOrgIndex);
             break;
         } // end menu option 1
@@ -1134,6 +1141,9 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
 
         } // end menu option 2
+        if(input == 'c' || input == 'C') {
+            cout << "Number of unique organizations: " << orgs.getSize() << ". Number of unique pesons: " << person.getSize() << endl;
+        }
 
     } // end while loop
 
