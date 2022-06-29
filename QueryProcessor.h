@@ -30,6 +30,8 @@ static void toLower(std::string & input);
 
 void menuSystem(AVLTree<string, string> &, AVLTree<string, string> &, AVLTree<string, string> &);
 
+std::vector<std::pair<string, int>> eliminateVectorDupes(std::vector<std::pair<string, int>>& pathsVec);
+
 };
 
 

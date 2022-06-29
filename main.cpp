@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     // absolute path
 //    p.testFileSystem("/Users/venkatsvellanki/Downloads/financial_articles/2018_01_112b52537b67659ad3609a234388c50a/");
 
-//    p.testFileSystem("/Users/venkatsvellanki/Downloads/sample_data_sets/size-10/");
+//    p.testFileSystem("/Users/venkatsvellanki/Downloads/sample_data_sets/size-6000/");
 
     s.searchForQuery(argv[1], argv[2]);
 
