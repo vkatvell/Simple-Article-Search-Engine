@@ -488,16 +488,43 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     });
 
                     if(removedDupes.size() > 15) {
-                        cout << "The top 15 paths are: " << endl;
+                        cout << "The top 15 results are: " << endl;
                         for(int i = 0; i < 15; ++i) {
+                            cout << letters[i] << " - ";
                             resultArticles(removedDupes[i].first);
+                            cout << endl;
+                        }
+                        cout << "\nEnter the letter corresponding to the article: ";
+                        string letterInput;
+                        cin >> letterInput;
+                        for(int i = 0; i < letters.size(); i++) {
+                            if(letterInput == letters[i]) {
+                                accessedArticle(removedDupes[i].first);
+                            }
+                            else {
+                                break;
+                            }
                         }
                     }
                     else {
                         cout << "The paths that contain all search terms are: " << endl;
+                        int j = 0;
                         for(const auto& path : removedDupes) {
-//                        cout << path.first << " and the relevancy score: " << path.second << endl;
+                            cout << letters[j] << " - ";
                             resultArticles(path.first);
+                            cout << endl;
+                            j++;
+                        }
+                        cout << "\nEnter the letter corresponding to the article: ";
+                        string letterInput;
+                        cin >> letterInput;
+                        for(int i = 0; i < letters.size(); i++) {
+                            if(letterInput == letters[i]) {
+                                accessedArticle(removedDupes[i].first);
+                            }
+                            else {
+                                break;
+                            }
                         }
                     }
                 }
@@ -520,16 +547,43 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     });
 
                     if(removedDupes.size() > 15) {
-                        cout << "The top 15 paths are: " << endl;
+                        cout << "The top 15 results are: " << endl;
                         for(int i = 0; i < 15; ++i) {
+                            cout << letters[i] << " - ";
                             resultArticles(removedDupes[i].first);
+                            cout << endl;
+                        }
+                        cout << "\nEnter the letter corresponding to the article: ";
+                        string letterInput;
+                        cin >> letterInput;
+                        for(int i = 0; i < letters.size(); i++) {
+                            if(letterInput == letters[i]) {
+                                accessedArticle(removedDupes[i].first);
+                            }
+                            else {
+                                break;
+                            }
                         }
                     }
                     else {
-                        cout << "The paths that contain all search terms are: " << endl;
+                        cout << "The results that contain all search terms are: " << endl;
+                        int j = 0;
                         for(const auto& path : removedDupes) {
-//                        cout << path.first << " and the relevancy score: " << path.second << endl;
+                            cout << letters[j] << " - ";
                             resultArticles(path.first);
+                            cout << endl;
+                            j++;
+                        }
+                        cout << "\nEnter the letter corresponding to the article: ";
+                        string letterInput;
+                        cin >> letterInput;
+                        for(int i = 0; i < letters.size(); i++) {
+                            if(letterInput == letters[i]) {
+                                accessedArticle(removedDupes[i].first);
+                            }
+                            else {
+                                break;
+                            }
                         }
                     }
                 }
@@ -571,7 +625,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     }
                     std::sort(notPath.begin(), notPath.end());
                 }
-                //TODO SET SUBTRACTION WITH TERM AFTER NOT
 
                 std::vector<string>::iterator itPerson;
                 itPerson = std::find(wordsToSearch.begin(), wordsToSearch.end(), "person");
@@ -706,24 +759,45 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 //                                           std::begin(indices), std::end(indices), intCmp{}
 //                    );
 
-                    cout << "The top 15 paths are: " << endl;
-//                    for(const auto& path : removedDupes) {
-////                        cout << path.first << " with relevancy score: " << path.second << endl;
-//                        cout << path.first << ": ";
-//                        resultArticles(path.first);
-//                    }
+                    cout << "The top 15 results are: " << endl;
                     for(int i = 0; i < 15; ++i) {
+                        cout << letters[i] << " - ";
                         resultArticles(removedDupes[i].first);
+                        cout << endl;
+                    }
+                    cout << "\nEnter the letter corresponding to the article: ";
+                    string letterInput;
+                    cin >> letterInput;
+                    for(int i = 0; i < letters.size(); i++) {
+                        if(letterInput == letters[i]) {
+                            accessedArticle(removedDupes[i].first);
+                        }
+                        else {
+                            break;
+                        }
                     }
                 }
                 else {
-                    cout << "The paths that contain all search terms are: " << endl;
+                    cout << "The results that contain all search terms are: " << endl;
+                    int j = 0;
                     for(const auto& path : removedDupes) {
-//                        cout << path.first << " and the relevancy score: " << path.second << endl;
+                        cout << letters[j] << " - ";
                         resultArticles(path.first);
+                        cout << endl;
+                        j++;
+                    }
+                    cout << "\nEnter the letter corresponding to the article: ";
+                    string letterInput;
+                    cin >> letterInput;
+                    for(int i = 0; i < letters.size(); i++) {
+                        if(letterInput == letters[i]) {
+                            accessedArticle(removedDupes[i].first);
+                        }
+                        else {
+                            break;
+                        }
                     }
                 }
-
             }
 
             // neither AND nor OR case
@@ -749,6 +823,17 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
                 }
                 //TODO SET SUBTRACTION FOR ALL TERMS AFTER NOT
+                std::vector<std::pair<string, int>> notPath;
+                if(hasNOT) {
+                    unordered_set<std::pair<string, int>, pair_hash> notPaths;
+                    notPaths.operator=(wordIndex.searchTree(afterNot));
+//                    cout << notPaths.size() << endl;
+                    for (const auto &file: notPaths) {
+//                    notPath.emplace_back(std::pair<string, int>(file.first, file.second));
+                        notPath.push_back(std::make_pair(file.first, file.second));
+                    }
+                    std::sort(notPath.begin(), notPath.end());
+                }
 
                 std::vector<string>::iterator itPerson;
                 itPerson = std::find(wordsToSearch.begin(), wordsToSearch.end(), "person");
@@ -857,33 +942,69 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                                           cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
                 unionPaths.resize(itr - unionPaths.begin());
 
+                auto cleaningUnionPaths = eliminateVectorDupes(unionPaths);
 
-                auto removedDupes = eliminateVectorDupes(unionPaths);
+                std::vector<std::pair<string, int>> removedDupes;
+                if(hasNOT) {
+                    std::vector<std::pair<string, int>> NOTsubtracted;
+
+                    std::set_difference(cleaningUnionPaths.begin(), cleaningUnionPaths.end(), notPath.begin(), notPath.end(),
+                                        std::back_inserter(NOTsubtracted), comparator{});
+
+                    removedDupes = eliminateVectorDupes(NOTsubtracted);
+                }
+                else {
+                    removedDupes = eliminateVectorDupes(unionPaths);
+                }
+
 
                 std::sort(removedDupes.begin(), removedDupes.end(), [](auto &left, auto &right) {
                     return right.second < left.second;
                 });
 
                 if(removedDupes.size() > 15) {
-                    std::vector<std::pair<string, int>> indices(15);
-                    std::partial_sort_copy(std::begin(removedDupes), std::end(removedDupes),
-                                           std::begin(indices), std::end(indices), intCmp{}
-                    );
+//                    std::vector<std::pair<string, int>> indices(15);
+//                    std::partial_sort_copy(std::begin(removedDupes), std::end(removedDupes),
+//                                           std::begin(indices), std::end(indices), intCmp{}
+//                    );
 
-                    cout << "The top 15 paths are: " << endl;
-                    for(const auto& path : indices) {
-                        cout << path.first << " with relevancy score: " << path.second << endl;
-                        resultArticles(path.first);
-
-                        // TODO allow picking the result to read text from that article
+                    cout << "The top 15 results are: " << endl;
+                    for(int i = 0; i < 15; ++i) {
+                        cout << letters[i] << " - ";
+                        resultArticles(removedDupes[i].first);
+                        cout << endl;
+                    }
+                    cout << "\nEnter the letter corresponding to the article: ";
+                    string letterInput;
+                    cin >> letterInput;
+                    for(int i = 0; i < letters.size(); i++) {
+                        if(letterInput == letters[i]) {
+                            accessedArticle(removedDupes[i].first);
+                        }
+                        else {
+                            break;
+                        }
                     }
                 }
                 else {
-                    cout << "The paths that contain all search terms are: " << endl;
+                    cout << "The results that contain all search terms are: " << endl;
+                    int j = 0;
                     for(const auto& path : removedDupes) {
-                        cout << path.first << " and the relevancy score: " << path.second << endl;
+                        cout << letters[j] << " - ";
                         resultArticles(path.first);
-                        // TODO allow picking the result to read text from that article
+                        cout << endl;
+                        j++;
+                    }
+                    cout << "\nEnter the letter corresponding to the article: ";
+                    string letterInput;
+                    cin >> letterInput;
+                    for(int i = 0; i < letters.size(); i++) {
+                        if(letterInput == letters[i]) {
+                            accessedArticle(removedDupes[i].first);
+                        }
+                        else {
+                            break;
+                        }
                     }
                 }
             }
@@ -894,9 +1015,9 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 // - ...timing data???
 
                 while (true ) {
-                    cout << "k. Return to Menu" << endl;
+                    cout << "q. Return to Menu" << endl;
                     cin >> input;
-                    if(input == 'K' || input == 'k') {
+                    if(input == 'q' || input == 'Q') {
                         break;
                     }
                     else {
@@ -907,9 +1028,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
         } // end menu option 2
 
-
     } // end while loop
-
 
 
 }
@@ -971,7 +1090,48 @@ void QueryProcessor::resultArticles(const string& inputPath) {
     auto val = d["title"].GetString();
     cout << val << endl;
 
+    auto publisher = d["thread"]["site"].GetString();
+
+    auto date = d["thread"]["published"].GetString();
+
+    cout << std::setw(15) << std::right << "Publisher: " << publisher << " | Date: " << date << endl;
+
+}
+
+void QueryProcessor::accessedArticle(const string &filePath) {
+    //open an ifstream on the file of interest and check that it could be opened.
+    std::ifstream input(filePath.c_str());
+    if(!input.is_open())
+        std::cerr << "cannot open file" << endl;
+
+    //Create a RapidJSON IStreamWrapper using the file input stream above.
+    rapidjson::IStreamWrapper isw(input);
+
+    //Create a RapidJSON Document object and use it to parse the IStreamWrapper object above.
+    rapidjson::Document d;
+    d.ParseStream(isw);
+
+    //Now that the document is parsed, we can access different elements the JSON using
+    //familiar subscript notation.
+
+    //This accesses the -title- element in the JSON. Since the value associated with title is a string (rather than
+    // an array or something else), we call the GetString() function to return the actual title of the article
+    // as a c-string.
+    //
+    cout << endl << endl;
+    cout << "Title: ";
+    auto val = d["title"].GetString();
+    cout << val << endl << endl;
+
+    auto publisher = d["thread"]["site"].GetString();
+
+    auto date = d["thread"]["published"].GetString();
+
+    cout << std::setw(15) << std::right << "Publisher: " << publisher << " | Date: " << date << "\n"<< endl;
     string text = d["text"].GetString();
+
+    cout << text << "\n\n\n" << endl;
+
 }
 // end function
 

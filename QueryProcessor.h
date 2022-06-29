@@ -5,6 +5,7 @@
 #ifndef INC_22SU_SEARCH_ENGINE_QUERYPROCESSOR_H
 #define INC_22SU_SEARCH_ENGINE_QUERYPROCESSOR_H
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include "olestem/stemming/english_stem.h"
 #include <algorithm>
@@ -36,6 +37,9 @@ std::vector<std::pair<string, int>> eliminateVectorDupes(std::vector<std::pair<s
 
 void resultArticles(const string& inputPath);
 
+std::vector<string> letters = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o"};
+
+void accessedArticle(const string& filePath);
 
 };
 
