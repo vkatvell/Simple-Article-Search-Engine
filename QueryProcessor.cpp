@@ -500,9 +500,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
                             }
-                            else {
-                                break;
-                            }
                         }
                     }
                     else {
@@ -520,9 +517,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
-                            }
-                            else {
-                                break;
                             }
                         }
                     }
@@ -559,9 +553,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
                             }
-                            else {
-                                break;
-                            }
                         }
                     }
                     else {
@@ -579,9 +570,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
-                            }
-                            else {
-                                break;
                             }
                         }
                     }
@@ -771,9 +759,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         if(letterInput == letters[i]) {
                             accessedArticle(removedDupes[i].first);
                         }
-                        else {
-                            break;
-                        }
                     }
                 }
                 else {
@@ -791,9 +776,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
                             accessedArticle(removedDupes[i].first);
-                        }
-                        else {
-                            break;
                         }
                     }
                 }
@@ -976,9 +958,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         if(letterInput == letters[i]) {
                             accessedArticle(removedDupes[i].first);
                         }
-                        else {
-                            break;
-                        }
                     }
                 }
                 else {
@@ -996,9 +975,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
                             accessedArticle(removedDupes[i].first);
-                        }
-                        else {
-                            break;
                         }
                     }
                 }
