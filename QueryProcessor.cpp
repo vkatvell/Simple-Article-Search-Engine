@@ -206,7 +206,6 @@ void QueryProcessor::toLower(string &input) {
 
 void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<string, string> &person, AVLTree<string, string> &orgs) {
     // parse dataset first before calling this function
-
     cout << "Welcome to Noah and Venkat's Financial Article Search Engine" << endl;
 
     bool continue_running = true;
@@ -219,6 +218,17 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         // reading in user input for menu value
         char input;
         cin >> input;
+
+        while(true) {
+            if(input != 'A' && input != 'a' && input != 'b' && input != 'B' && input != 'e' && input != 'E') {
+                cout << "Invalid input. Please try again." << endl;
+                cin >> input;
+                continue;
+            }
+            else {
+                break;
+            }
+        }
 
         if(input == 'E' || input == 'e') {
             continue_running = false;
@@ -277,13 +287,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             std::vector<string> wordsToSearch = readingQueries(query);
 
             unordered_set<std::pair<string, int>, pair_hash> testCase;
-
-//            testCase.operator=(wordIndex.searchTree(wordsToSearch[0]));
-//
-//            for(const auto& files : testCase) {
-//                cout << files.first << ": " << files.second << std::endl;
-//            }
-
 
             bool isAND = false;
             bool isOR = false;
