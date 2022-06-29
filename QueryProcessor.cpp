@@ -9,6 +9,23 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+struct intCmp {
+    bool operator()(std::pair<string, int>& a, std::pair<string, int>& b) {
+        return b.second < a.second;
+    }
+};
+
+struct comparator {
+    bool operator()(std::pair<string,int>& a, std::pair<string, int>& b) {
+        if(b.second < a.second) {
+            return a.first < b.first;
+        }
+        else {
+            return b.first < a.first;
+        }
+    }
+};
+
 std::vector<std::string> QueryProcessor::readingQueries(string& input) {
 string andStr = "and";
 string orStr = "or";
@@ -119,7 +136,7 @@ std::vector<string> wordsToSearch;
              return ORwordsToSearch;
         }
 
-        if(isAND == false && isOR == false) {
+        if(!isAND && !isOR) {
             while (query >> indWord) {
                 if (indWord == notStr) {
                     hasNOT = true;
@@ -334,14 +351,29 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
                 std::sort(orgPath.begin(), orgPath.end());
 
-                // intersection of person and org paths
-                std::vector<std::pair<string,int>> personOrgs(100000);
-                auto poItr = std::set_intersection(personPath.begin(), personPath.end(),
-                                                   orgPath.begin(), orgPath.end(), personOrgs.begin());
+                std::vector<std::pair<string, int>> cleanedVec;
 
-                personOrgs.resize(poItr - personOrgs.begin());
+                // intersection of person and org paths and cases
+                if(hasPERSON && hasORG) {
+                    std::vector<std::pair<string,int>> personOrgs;
+                    std::set_intersection(personPath.begin(), personPath.end(),
+                                                       orgPath.begin(), orgPath.end(),
+                                                       std::back_inserter(personOrgs), comparator{});
 
-                auto cleanedVec = eliminateVectorDupes(personOrgs);
+//                    personOrgs.resize(poItr - personOrgs.begin());
+
+                    cleanedVec = eliminateVectorDupes(personOrgs);
+                } else if(hasPERSON && !hasORG) {
+                    cleanedVec = personPath;
+                } else if(hasORG && !hasPERSON) {
+                    cleanedVec = orgPath;
+                }
+                else {
+                   hasPERSON = false;
+                   hasORG = false;
+                }
+
+                std::sort(cleanedVec.begin(), cleanedVec.end());
 
                 // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
                 // then performs set intersection
@@ -397,25 +429,73 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 std::sort(whileLoopPaths.begin(), whileLoopPaths.end());
 
-                std::vector<std::pair<string, int>> wordPaths(100000);
-                std::vector<std::pair<string, int>>::iterator it;
+                //std::vector<std::pair<string, int>> wordPaths(100000);
+                std::vector<std::pair<string, int>> wordPaths;
+                //std::vector<std::pair<string, int>>::iterator it;
 
-                it = std::set_intersection(firstWordPaths.begin(), firstWordPaths.end(),
-                                    whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin()); //TODO figure out why this isn't working
+                std::set_intersection(firstWordPaths.begin(), firstWordPaths.end(),
+                                    whileLoopPaths.begin(), whileLoopPaths.end(), std::back_inserter(wordPaths), comparator{}); //TODO figure out why this isn't working
 
-                wordPaths.resize(it - wordPaths.begin());
+                //wordPaths.resize(it - wordPaths.begin());
 
-                std::vector<std::pair<string, int>> intersectPaths(100000);
-                auto itr = std::set_intersection(wordPaths.begin(), wordPaths.end(),
-                                                 cleanedVec.begin(), cleanedVec.end(), intersectPaths.begin());
+                if(hasPERSON || hasORG) {
+                    std::vector<std::pair<string, int>> intersectPaths;
+                    std::set_intersection(wordPaths.begin(), wordPaths.end(),
+                                          cleanedVec.begin(), cleanedVec.end(),
+                                          std::back_inserter(intersectPaths), comparator{});
 
-                intersectPaths.resize(itr - intersectPaths.begin());
+                    auto removedDupes = eliminateVectorDupes(intersectPaths);
 
-                auto removedDupes = eliminateVectorDupes(intersectPaths);
+                    std::sort(removedDupes.begin(), removedDupes.end(), [](auto &left, auto &right) {
+                        return right.second < left.second;
+                    });
 
-                cout << "The paths that contain both vehicle and investor are: " << endl;
-                for(const auto& path : removedDupes) {
+                    if(removedDupes.size() > 15) {
+                        std::vector<std::pair<string, int>> indices(15);
+                        std::partial_sort_copy(std::begin(removedDupes), std::end(removedDupes),
+                                               std::begin(indices), std::end(indices), intCmp{}
+                        );
+
+                        cout << "The top 15 paths are: " << endl;
+                        for(const auto& path : indices) {
+                        cout << path.first << " with relevancy score: " << path.second << endl;
+                            resultArticles(path.first);
+                        }
+                    }
+                    else {
+                        cout << "The paths that contain all search terms are: " << endl;
+                        for(const auto& path : removedDupes) {
                         cout << path.first << " and the relevancy score: " << path.second << endl;
+                            resultArticles(path.first);
+                        }
+                    }
+                }
+                else {
+                    auto removedDupes = eliminateVectorDupes(wordPaths);
+
+                    std::sort(removedDupes.begin(), removedDupes.end(), [](auto &left, auto &right) {
+                        return right.second < left.second;
+                    });
+
+                    if(removedDupes.size() > 15) {
+                        std::vector<std::pair<string, int>> indices(15);
+                        std::partial_sort_copy(std::begin(removedDupes), std::end(removedDupes),
+                                               std::begin(indices), std::end(indices), intCmp{}
+                        );
+
+                        cout << "The top 15 paths are: " << endl;
+                        for(const auto& path : indices) {
+//                        cout << path.first << " with relevancy score: " << path.second << endl;
+                            resultArticles(path.first);
+                        }
+                    }
+                    else {
+                        cout << "The paths that contain all search terms are: " << endl;
+                        for(const auto& path : removedDupes) {
+//                        cout << path.first << " and the relevancy score: " << path.second << endl;
+                            resultArticles(path.first);
+                        }
+                    }
                 }
 
                 // getting the words after NOT, PERSON, and ORG
@@ -454,12 +534,12 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
                 unordered_set<std::pair<string, int>, pair_hash> personPaths;
                 personPaths.operator=(person.searchTree(afterPerson));
-                //TODO union with person index paths
-//                std::vector<std::pair<string, int>> personPath;
-//                for(const auto& file : personPaths) {
-//                    personPath.emplace_back(std::pair<string, int>(file.first, file.second));
-//                }
-//                std::sort(personPath.begin(), personPath.end());
+
+                std::vector<std::pair<string, int>> personPath;
+                for(const auto& file : personPaths) {
+                    personPath.emplace_back(std::pair<string, int>(file.first, file.second));
+                }
+                std::sort(personPath.begin(), personPath.end());
 
                 std::vector<string>::iterator itOrg;
                 itOrg = std::find(wordsToSearch.begin(), wordsToSearch.end(), "org");
@@ -469,21 +549,21 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
                 unordered_set<std::pair<string, int>, pair_hash> orgPaths;
                 orgPaths.operator=(orgs.searchTree(afterOrg));
-                //TODO union with org index paths
-//                std::vector<std::pair<string, int>> orgPath;
-//                for(const auto& file : orgPaths) {
-//                    orgPath.emplace_back(std::pair<string, int>(file.first, file.second));
-//                }
-//                std::sort(orgPath.begin(), orgPath.end());
-//
-//                // union of person and org paths
-//                std::vector<std::pair<string,int>> personOrgs(100000);
-//                auto poItr = std::set_union(personPath.begin(), personPath.end(),
-//                                                   orgPath.begin(), orgPath.end(), personOrgs.begin());
-//
-//                personOrgs.resize(poItr - personOrgs.begin());
-//
-//                auto cleanedVec = eliminateVectorDupes(personOrgs);
+
+                std::vector<std::pair<string, int>> orgPath;
+                for(const auto& file : orgPaths) {
+                    orgPath.emplace_back(std::pair<string, int>(file.first, file.second));
+                }
+                std::sort(orgPath.begin(), orgPath.end());
+
+                // union of person and org paths
+                std::vector<std::pair<string,int>> personOrgs(100000);
+                auto poItr = std::set_union(personPath.begin(), personPath.end(),
+                                                   orgPath.begin(), orgPath.end(), personOrgs.begin());
+
+                personOrgs.resize(poItr - personOrgs.begin());
+
+                auto cleanedVec = eliminateVectorDupes(personOrgs);
 
 
                 // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
@@ -547,20 +627,40 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                                            whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin());
                 wordPaths.resize(it - wordPaths.begin());
 
-//                std::vector<std::pair<string, int>> unionPaths(100000);
-//
-//                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
-//                                    cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
-//                unionPaths.resize(it - unionPaths.begin());
+                std::vector<std::pair<string, int>> unionPaths(100000);
 
-//                auto removedDupes = eliminateVectorDupes(unionPaths);
+                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
+                                    cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
+                unionPaths.resize(itr - unionPaths.begin());
 
-                auto removedDupes = eliminateVectorDupes(wordPaths);
+                auto removedDupes = eliminateVectorDupes(unionPaths);
 
-                cout << "The paths that contain all search terms are: " << endl;
-                for(const auto& path : removedDupes) {
-                        cout << path.first << " and the relevancy score: " << path.second << endl;
+//                auto removedDupes = eliminateVectorDupes(wordPaths);
+
+                std::sort(removedDupes.begin(), removedDupes.end(), [](auto &left, auto &right) {
+                    return right.second < left.second;
+                });
+
+                if(removedDupes.size() > 15) {
+                    std::vector<std::pair<string, int>> indices(15);
+                    std::partial_sort_copy(std::begin(removedDupes), std::end(removedDupes),
+                                           std::begin(indices), std::end(indices), intCmp{}
+                    );
+
+                    cout << "The top 15 paths are: " << endl;
+                    for(const auto& path : indices) {
+//                        cout << path.first << " with relevancy score: " << path.second << endl;
+                        resultArticles(path.first);
+                    }
                 }
+                else {
+                    cout << "The paths that contain all search terms are: " << endl;
+                    for(const auto& path : removedDupes) {
+//                        cout << path.first << " and the relevancy score: " << path.second << endl;
+                        resultArticles(path.first);
+                    }
+                }
+
             }
 
             // neither AND nor OR case
@@ -574,11 +674,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 // afterOrg is the organization that appears after ORG operator
                 string afterOrg;
 
-                testCase.operator=(wordIndex.searchTree(wordsToSearch[0]));
-
-                for(const auto& files : testCase) {
-                    cout << files.first << ": " << files.second << std::endl;
-                }
 
                 hasNOT = false;
                 hasPERSON = false;
@@ -590,7 +685,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     hasNOT = true;
                     afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
                 }
-
                 //TODO SET SUBTRACTION FOR ALL TERMS AFTER NOT
 
                 std::vector<string>::iterator itPerson;
@@ -601,10 +695,12 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
                 unordered_set<std::pair<string, int>, pair_hash> personPaths;
                 personPaths.operator=(person.searchTree(afterPerson));
-                for(const auto& paths : personPaths) {
-                    cout << paths.first << ": " << paths.second << endl;
+
+                std::vector<std::pair<string, int>> personPath;
+                for(const auto& file : personPaths) {
+                    personPath.emplace_back(std::pair<string, int>(file.first, file.second));
                 }
-                //TODO if after NOT subtract set from wordIndex paths
+                std::sort(personPath.begin(), personPath.end());
 
                 std::vector<string>::iterator itOrg;
                 itOrg = std::find(wordsToSearch.begin(), wordsToSearch.end(), "org");
@@ -614,18 +710,120 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
                 unordered_set<std::pair<string, int>, pair_hash> orgPaths;
                 orgPaths.operator=(orgs.searchTree(afterOrg));
-                for(const auto& paths : orgPaths) {
-                    cout << paths.first << ": " << paths.second << endl;
+
+                std::vector<std::pair<string, int>> orgPath;
+                for(const auto& file : orgPaths) {
+                    orgPath.emplace_back(std::pair<string, int>(file.first, file.second));
+                }
+                std::sort(orgPath.begin(), orgPath.end());
+
+                // union of person and org paths
+                std::vector<std::pair<string,int>> personOrgs(100000);
+                auto poItr = std::set_union(personPath.begin(), personPath.end(),
+                                            orgPath.begin(), orgPath.end(), personOrgs.begin());
+
+                personOrgs.resize(poItr - personOrgs.begin());
+
+                auto cleanedVec = eliminateVectorDupes(personOrgs);
+
+                //TODO union with wordIndex paths
+
+
+                unordered_set<std::pair<string, int>, pair_hash> paths;
+
+                paths.operator=(wordIndex.searchTree(wordsToSearch[0]));
+
+                std::vector<std::pair<string,int>> firstWordPaths;
+
+                for(const auto& files : paths) {
+                    firstWordPaths.emplace_back(files.first, files.second);
                 }
 
-                //TODO if after NOT subtract set org from wordIndex paths
+                std::sort(firstWordPaths.begin(), firstWordPaths.end());
 
+                std::vector<std::pair<string, int>> whileLoopPaths;
+
+                int i = 1;
+
+                if(!hasNOT && !hasORG && !hasPERSON) {
+                    while (i < wordsToSearch.size()) {
+                        // set union using for loop
+                        unordered_set<std::pair<string, int>, pair_hash> temp;
+
+                        // setting temp to the set of the unordered set that was returned from
+                        // the search tree function
+                        temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+
+                        for(const auto& files : temp) {
+                            whileLoopPaths.emplace_back(std::pair<string, int>(files.first, files.second));
+                        }
+                        i++;
+                    }
+                }
+                else {
+                    while (wordsToSearch[i] != "not" && wordsToSearch[i] != "person" && wordsToSearch[i] != "org") {
+                        if(!hasNOT && !hasORG && !hasPERSON) {
+                            break;
+                        }
+                        // set union using for loop
+                        unordered_set<std::pair<string, int>, pair_hash> temp;
+
+                        // setting temp to the set of the unordered set that was returned from
+                        // the search tree function
+                        temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+
+                        for(const auto& files : temp) {
+                            whileLoopPaths.emplace_back(std::pair<string, int>(files.first, files.second));
+                        }
+                        i++;
+                    }
+                }
+
+                std::sort(whileLoopPaths.begin(), whileLoopPaths.end());
+
+                std::vector<std::pair<string, int>> wordPaths(100000);
+                std::vector<std::pair<string, int>>::iterator it;
+
+                it = std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
+                                    whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin());
+                wordPaths.resize(it - wordPaths.begin());
+
+                std::vector<std::pair<string, int>> unionPaths(100000);
+
+                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
+                                          cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
+                unionPaths.resize(itr - unionPaths.begin());
+
+
+                auto removedDupes = eliminateVectorDupes(unionPaths);
+
+                std::sort(removedDupes.begin(), removedDupes.end(), [](auto &left, auto &right) {
+                    return right.second < left.second;
+                });
+
+                if(removedDupes.size() > 15) {
+                    std::vector<std::pair<string, int>> indices(15);
+                    std::partial_sort_copy(std::begin(removedDupes), std::end(removedDupes),
+                                           std::begin(indices), std::end(indices), intCmp{}
+                    );
+
+                    cout << "The top 15 paths are: " << endl;
+                    for(const auto& path : indices) {
+                        cout << path.first << " with relevancy score: " << path.second << endl;
+                        resultArticles(path.first);
+
+                        // TODO allow picking the result to read text from that article
+                    }
+                }
+                else {
+                    cout << "The paths that contain all search terms are: " << endl;
+                    for(const auto& path : removedDupes) {
+                        cout << path.first << " and the relevancy score: " << path.second << endl;
+                        resultArticles(path.first);
+                        // TODO allow picking the result to read text from that article
+                    }
+                }
             }
-
-
-
-            //TODO use relevancy ranking to print results with paths as input and
-            // then list out all possible articles names with associated number menu to read particular article
 
             // print statistics
                 // - Total number of articles indexed
@@ -685,6 +883,32 @@ std::vector<std::pair<string, int>> QueryProcessor::eliminateVectorDupes(std::ve
         }
     }
     return unionPaths;
+}
+
+void QueryProcessor::resultArticles(const string& inputPath) {
+    //open an ifstream on the file of interest and check that it could be opened.
+    std::ifstream input(inputPath.c_str());
+    if(!input.is_open())
+        std::cerr << "cannot open file" << endl;
+
+    //Create a RapidJSON IStreamWrapper using the file input stream above.
+    rapidjson::IStreamWrapper isw(input);
+
+    //Create a RapidJSON Document object and use it to parse the IStreamWrapper object above.
+    rapidjson::Document d;
+    d.ParseStream(isw);
+
+    //Now that the document is parsed, we can access different elements the JSON using
+    //familiar subscript notation.
+
+    //This accesses the -title- element in the JSON. Since the value associated with title is a string (rather than
+    // an array or something else), we call the GetString() function to return the actual title of the article
+    // as a c-string.
+    //
+    auto val = d["title"].GetString();
+    cout << val << endl;
+
+    string text = d["text"].GetString();
 }
 // end function
 

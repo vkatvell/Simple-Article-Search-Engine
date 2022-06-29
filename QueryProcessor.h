@@ -11,6 +11,8 @@
 #include <sstream>
 #include <vector>
 #include "Parser.h"
+#include <numeric>
+#include <fstream>
 
 // rapidJSON headers
 #include "rapidjson/istreamwrapper.h"
@@ -31,6 +33,8 @@ static void toLower(std::string & input);
 void menuSystem(AVLTree<string, string> &, AVLTree<string, string> &, AVLTree<string, string> &);
 
 std::vector<std::pair<string, int>> eliminateVectorDupes(std::vector<std::pair<string, int>>& pathsVec);
+
+void resultArticles(const string& inputPath);
 
 };
 
