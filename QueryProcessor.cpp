@@ -26,16 +26,6 @@ struct comparator {
     }
 };
 
-struct comparator1 {
-    bool operator()(std::pair<string,int>& a, std::pair<string, int>& b) {
-//        if(b.second < a.second) {
-        return a.first != b.first;
-//        }
-//        else {
-//            return b.first < a.first;
-//        }
-    }
-};
 
 std::vector<std::string> QueryProcessor::readingQueries(string& input) {
 string andStr = "and";
@@ -309,7 +299,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             }
 
             // doing set operations if vector is AND case INTERSECTION
-            if(isAND == true && isOR == false) {
+            if(isAND && !isOR) {
 
                 // afterNot is the word that appears after NOT operator
                 string afterNot;
@@ -378,8 +368,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                                                        orgPath.begin(), orgPath.end(),
                                                        std::back_inserter(personOrgs), comparator{});
 
-//                    personOrgs.resize(poItr - personOrgs.begin());
-
                     cleanedVec = eliminateVectorDupes(personOrgs);
                 } else if(hasPERSON && !hasORG) {
                     cleanedVec = personPath;
@@ -395,7 +383,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
                 // then performs set intersection
-                int i = 2;
+                int m = 2;
 
                 unordered_set<std::pair<string, int>, pair_hash> paths;
 
@@ -412,22 +400,22 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 std::vector<std::pair<string, int>> whileLoopPaths;
 
                 if(!hasNOT && !hasORG && !hasPERSON) {
-                    while(i < wordsToSearch.size()) {
+                    while(m < wordsToSearch.size()) {
                         // set intersection using for loop
                         unordered_set<std::pair<string, int>, pair_hash> temp;
 
                         // setting temp to the set of the unordered set that was returned from
                         // the search tree function
-                        temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+                        temp.operator=(wordIndex.searchTree(wordsToSearch[m]));
 
                         for(const auto& files : temp) {
                             whileLoopPaths.emplace_back(std::pair<string, int>(files.first, files.second));
                         }
-                        i++;
+                        m++;
                     }
                 }
                 else {
-                    while (wordsToSearch[i] != "not" && wordsToSearch[i] != "person" && wordsToSearch[i] != "org") {
+                    while (wordsToSearch[m] != "not" && wordsToSearch[m] != "person" && wordsToSearch[m] != "org") {
                         if(!hasNOT && !hasORG && !hasPERSON) {
                             break;
                         }
@@ -436,12 +424,12 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                         // setting temp to the set of the unordered set that was returned from
                         // the search tree function
-                        temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+                        temp.operator=(wordIndex.searchTree(wordsToSearch[m]));
 
                         for(const auto& files : temp) {
                             whileLoopPaths.emplace_back(std::pair<string, int>(files.first, files.second));
                         }
-                        i++;
+                        m++;
                     }
                 }
 
@@ -492,6 +480,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         cout << "\nEnter the letter corresponding to the article: ";
                         string letterInput;
                         cin >> letterInput;
+
+                        bool letterFound = false;
+
+                        while(true) {
+                            cin >> letterInput;
+                            for(int i =0; i < letters.size(); i++) {
+                                if(letterInput == letters[i])
+                                    letterFound = true;
+                                else
+                                    letterFound = false;
+                            }
+                            if(!letterFound) {
+                                cout << "Not a valid input. Please try again." << endl;
+                            }
+                            else{
+                                break;
+                            }
+                        }
+
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
@@ -510,6 +517,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         cout << "\nEnter the letter corresponding to the article: ";
                         string letterInput;
                         cin >> letterInput;
+
+                        bool letterFound = false;
+
+                        while(true) {
+                            cin >> letterInput;
+                            for(int i =0; i < letters.size(); i++) {
+                                if(letterInput == letters[i])
+                                    letterFound = true;
+                                else
+                                    letterFound = false;
+                            }
+                            if(!letterFound) {
+                                cout << "Not a valid input. Please try again." << endl;
+                            }
+                            else{
+                                break;
+                            }
+                        }
+
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
@@ -545,6 +571,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         cout << "\nEnter the letter corresponding to the article: ";
                         string letterInput;
                         cin >> letterInput;
+
+                        bool letterFound = false;
+
+                        while(true) {
+                            cin >> letterInput;
+                            for(int i =0; i < letters.size(); i++) {
+                                if(letterInput == letters[i])
+                                    letterFound = true;
+                                else
+                                    letterFound = false;
+                            }
+                            if(!letterFound) {
+                                cout << "Not a valid input. Please try again." << endl;
+                            }
+                            else{
+                                break;
+                            }
+                        }
+
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
@@ -563,6 +608,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         cout << "\nEnter the letter corresponding to the article: ";
                         string letterInput;
                         cin >> letterInput;
+
+                        bool letterFound = false;
+
+                        while(true) {
+                            cin >> letterInput;
+                            for(int i =0; i < letters.size(); i++) {
+                                if(letterInput == letters[i])
+                                    letterFound = true;
+                                else
+                                    letterFound = false;
+                            }
+                            if(!letterFound) {
+                                cout << "Not a valid input. Please try again." << endl;
+                            }
+                            else{
+                                break;
+                            }
+                        }
+
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
@@ -579,7 +643,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             }
 
             // doing operations if set operation is OR case UNION
-            else if(isOR == true && isAND == false) {
+            else if(isOR && !isAND) {
                 // afterNot is the word that appears after NOT operator
                 string afterNot;
 
@@ -651,7 +715,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
                 // then performs set intersection
-                int i = 2;
+                int m = 2;
 
                 unordered_set<std::pair<string, int>, pair_hash> paths;
 
@@ -668,22 +732,22 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 std::vector<std::pair<string, int>> whileLoopPaths;
 
                 if(!hasNOT && !hasORG && !hasPERSON) {
-                    while (i < wordsToSearch.size()) {
+                    while (m < wordsToSearch.size()) {
                         // set union using for loop
                         unordered_set<std::pair<string, int>, pair_hash> temp;
 
                         // setting temp to the set of the unordered set that was returned from
                         // the search tree function
-                        temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+                        temp.operator=(wordIndex.searchTree(wordsToSearch[m]));
 
                         for(const auto& files : temp) {
                             whileLoopPaths.emplace_back(std::pair<string, int>(files.first, files.second));
                         }
-                        i++;
+                        m++;
                     }
                 }
                 else {
-                    while (wordsToSearch[i] != "not" && wordsToSearch[i] != "person" && wordsToSearch[i] != "org") {
+                    while (wordsToSearch[m] != "not" && wordsToSearch[m] != "person" && wordsToSearch[m] != "org") {
                         if(!hasNOT && !hasORG && !hasPERSON) {
                             break;
                         }
@@ -692,12 +756,12 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                         // setting temp to the set of the unordered set that was returned from
                         // the search tree function
-                        temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+                        temp.operator=(wordIndex.searchTree(wordsToSearch[m]));
 
                         for(const auto& files : temp) {
                             whileLoopPaths.emplace_back(std::pair<string, int>(files.first, files.second));
                         }
-                        i++;
+                        m++;
                     }
                 }
 
@@ -751,6 +815,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     cout << "\nEnter the letter corresponding to the article: ";
                     string letterInput;
                     cin >> letterInput;
+
+                    bool letterFound = false;
+
+                    while(true) {
+                        cin >> letterInput;
+                        for(int i =0; i < letters.size(); i++) {
+                            if(letterInput == letters[i])
+                                letterFound = true;
+                            else
+                                letterFound = false;
+                        }
+                        if(!letterFound) {
+                            cout << "Not a valid input. Please try again." << endl;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
                             accessedArticle(removedDupes[i].first);
@@ -769,6 +852,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     cout << "\nEnter the letter corresponding to the article: ";
                     string letterInput;
                     cin >> letterInput;
+
+                    bool letterFound = false;
+
+                    while(true) {
+                        cin >> letterInput;
+                        for(int i =0; i < letters.size(); i++) {
+                            if(letterInput == letters[i])
+                                letterFound = true;
+                            else
+                                letterFound = false;
+                        }
+                        if(!letterFound) {
+                            cout << "Not a valid input. Please try again." << endl;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
                             accessedArticle(removedDupes[i].first);
@@ -778,7 +880,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             }
 
             // neither AND nor OR case
-            if(isAND == false && isOR == false) {
+            if(!isAND && !isOR) {
                 // afterNot is the word that appears after NOT operator
                 string afterNot;
 
@@ -864,25 +966,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 std::vector<std::pair<string, int>> whileLoopPaths;
 
-                int i = 1;
+                int m = 1;
 
                 if(!hasNOT && !hasORG && !hasPERSON) {
-                    while (i < wordsToSearch.size()) {
+                    while (m < wordsToSearch.size()) {
                         // set union using for loop
                         unordered_set<std::pair<string, int>, pair_hash> temp;
 
                         // setting temp to the set of the unordered set that was returned from
                         // the search tree function
-                        temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+                        temp.operator=(wordIndex.searchTree(wordsToSearch[m]));
 
                         for(const auto& files : temp) {
                             whileLoopPaths.emplace_back(std::pair<string, int>(files.first, files.second));
                         }
-                        i++;
+                        m++;
                     }
                 }
                 else {
-                    while (wordsToSearch[i] != "not" && wordsToSearch[i] != "person" && wordsToSearch[i] != "org") {
+                    while (wordsToSearch[m] != "not" && wordsToSearch[m] != "person" && wordsToSearch[m] != "org") {
                         if(!hasNOT && !hasORG && !hasPERSON) {
                             break;
                         }
@@ -891,12 +993,12 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                         // setting temp to the set of the unordered set that was returned from
                         // the search tree function
-                        temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
+                        temp.operator=(wordIndex.searchTree(wordsToSearch[m]));
 
                         for(const auto& files : temp) {
                             whileLoopPaths.emplace_back(std::pair<string, int>(files.first, files.second));
                         }
-                        i++;
+                        m++;
                     }
                 }
 
@@ -950,6 +1052,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     cout << "\nEnter the letter corresponding to the article: ";
                     string letterInput;
                     cin >> letterInput;
+
+                    bool letterFound = false;
+
+                    while(true) {
+                        cin >> letterInput;
+                        for(int i =0; i < letters.size(); i++) {
+                            if(letterInput == letters[i])
+                                letterFound = true;
+                            else
+                                letterFound = false;
+                        }
+                        if(!letterFound) {
+                            cout << "Not a valid input. Please try again." << endl;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
                             accessedArticle(removedDupes[i].first);
@@ -968,6 +1089,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     cout << "\nEnter the letter corresponding to the article: ";
                     string letterInput;
                     cin >> letterInput;
+
+                    bool letterFound = false;
+
+                    while(true) {
+                        cin >> letterInput;
+                        for(int i =0; i < letters.size(); i++) {
+                            if(letterInput == letters[i])
+                                letterFound = true;
+                            else
+                                letterFound = false;
+                        }
+                        if(!letterFound) {
+                            cout << "Not a valid input. Please try again." << endl;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
                             accessedArticle(removedDupes[i].first);
