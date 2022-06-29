@@ -116,7 +116,7 @@ void Parser::testReadJsonFile(AVLTree<string, string> & wordIndex, AVLTree<strin
 
 
     auto organizations = d["entities"]["organizations"].GetArray();
-    cout << " Organization Entities" << endl;
+//    cout << " Organization Entities" << endl;
     std::unordered_map<string, int> org_map;
     for(auto& o : organizations) {
         string temp = o["name"].GetString();

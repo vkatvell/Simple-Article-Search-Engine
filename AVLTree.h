@@ -277,7 +277,9 @@ template <typename K, typename V>
 AVLTree<K,V>::~AVLTree(){
     //call destructor
     deleteTree(root);
-    if(root == nullptr) {std::cout << "root cleared";}
+    if(root == nullptr) {
+//        std::cout << "root cleared";
+    }
 }
 
 //print tree recursively

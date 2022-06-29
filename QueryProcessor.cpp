@@ -48,7 +48,7 @@ ORwordsToSearch.push_back(orStr);
         string afterOrg;
         string afterPerson;
 
-        if(isAND) {
+        if(isAND && !isOR) {
             while(query >> indWord) {
                 if(indWord == notStr) {
                     hasNOT = true;
@@ -81,9 +81,7 @@ ORwordsToSearch.push_back(orStr);
                 }
             }
             return ANDwordsToSearch;
-        }
-
-        if(isOR) {
+        } else if(isOR && !isAND) {
             while(query >> indWord) {
                 if(indWord == notStr) {
                     hasNOT = true;
@@ -211,16 +209,26 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         // 1. parsing new dataset
         if(input == 'A') {
             // clear wordIndex, peopleIndex, orgIndex
+            AVLTree<string, string> newWordIndex;
+            AVLTree<string, string> newPersonIndex;
+            AVLTree<string, string> newOrgIndex;
+
+            Parser p;
+
+            int newCount;
 
             // parse new dataset
+            cin.ignore();
             cout << "Enter path to a new dataset to parse: ";
             string newPath;
 
             cin >> newPath;
             // call parser test file system function and pass in new empty avl trees for
             // three indexes
-
+            p.testFileSystem(newPath.c_str(), newWordIndex, newPersonIndex, newOrgIndex, newCount);
             // continue and reprint menu
+            cout << "Done parsing new dataset. Returning you to main menu..." << endl;
+            menuSystem(newWordIndex, newPersonIndex, newOrgIndex);
         } // end menu option 1
 
 
@@ -234,6 +242,8 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
        // bankruptcy NOT facebook
        // OR facebook instagram NOT bankruptcy ORG snap PERSON cramer
         if(input == 'B') {
+
+            cin.ignore();
             cout << "Enter a query: ";
             string query;
 
@@ -241,8 +251,20 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             // call readingQueries function
             std::vector<string> wordsToSearch = readingQueries(query);
 
+            unordered_set<std::pair<string, int>, pair_hash> testCase;
+
+            testCase.operator=(wordIndex.searchTree(wordsToSearch[0]));
+
+            for(const auto& files : testCase) {
+                cout << files.first << ": " << files.second << std::endl;
+            }
+
+
             bool isAND = false;
             bool isOR = false;
+            bool hasNOT = false;
+            bool hasPERSON = false;
+            bool hasORG = false;
 
             // first word of the vector is either AND, OR, or neither
             // so setting booleans for each case
@@ -268,6 +290,34 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 // afterOrg is the organization that appears after ORG operator
                 string afterOrg;
 
+                std::vector<string>::iterator itNot;
+                itNot = std::find(wordsToSearch.begin(), wordsToSearch.end(), "NOT");
+                if(itNot != wordsToSearch.end()) {
+                    hasNOT = true;
+                    afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
+                }
+                //TODO SET SUBTRACTION WITH ALL TERMS AFTER NOT
+
+                std::vector<string>::iterator itPerson;
+                itPerson = std::find(wordsToSearch.begin(), wordsToSearch.end(), "PERSON");
+                if(itPerson != wordsToSearch.end()) {
+                    hasPERSON = true;
+                    afterPerson = wordsToSearch[(itPerson - wordsToSearch.begin()) + 1];
+                }
+                unordered_set<std::pair<string, int>, pair_hash> personPaths;
+                personPaths.operator=(person.searchTree(afterPerson));
+                //TODO intersection with person index paths
+
+                std::vector<string>::iterator itOrg;
+                itOrg = std::find(wordsToSearch.begin(), wordsToSearch.end(), "ORG");
+                if(itOrg != wordsToSearch.end()) {
+                    hasORG = true;
+                    afterOrg = wordsToSearch[(itOrg - wordsToSearch.begin()) + 1];
+                }
+                unordered_set<std::pair<string, int>, pair_hash> orgPaths;
+                orgPaths.operator=(orgs.searchTree(afterOrg));
+                //TODO interesection with org index paths
+
 
                 // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
                 // then performs set intersection
@@ -278,7 +328,9 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 paths.operator=(wordIndex.searchTree(wordsToSearch[1]));
 
                 while (wordsToSearch[i] != "NOT" || wordsToSearch[i] != "PERSON" || wordsToSearch[i] != "ORG") {
-
+                    if(!hasNOT && !hasORG && !hasPERSON) {
+                        break;
+                    }
                     // set intersection using for loop
                     unordered_set<std::pair<string, int>, pair_hash> temp;
 
@@ -303,30 +355,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
 
                 // getting the words after NOT, PERSON, and ORG
-                std::vector<string>::iterator itNot;
-                itNot = std::find(wordsToSearch.begin(), wordsToSearch.end(), "NOT");
-                if(itNot != wordsToSearch.end()) {
-                    afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
-                }
-                //TODO SET SUBTRACTION WITH ALL TERMS AFTER NOT
 
-                std::vector<string>::iterator itPerson;
-                itPerson = std::find(wordsToSearch.begin(), wordsToSearch.end(), "PERSON");
-                if(itPerson != wordsToSearch.end()) {
-                    afterPerson = wordsToSearch[(itPerson - wordsToSearch.begin()) + 1];
-                }
-                unordered_set<std::pair<string, int>, pair_hash> personPaths;
-                personPaths.operator=(person.searchTree(afterPerson));
-                //TODO intersection with person index paths
-
-                std::vector<string>::iterator itOrg;
-                itOrg = std::find(wordsToSearch.begin(), wordsToSearch.end(), "ORG");
-                if(itOrg != wordsToSearch.end()) {
-                    afterOrg = wordsToSearch[(itOrg - wordsToSearch.begin()) + 1];
-                }
-                unordered_set<std::pair<string, int>, pair_hash> orgPaths;
-                orgPaths.operator=(orgs.searchTree(afterOrg));
-                //TODO interesection with org index paths
             }
 
             // doing operations if set operation is OR case
@@ -425,6 +454,9 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 unordered_set<std::pair<string, int>, pair_hash> paths;
 
                 while (wordsToSearch[i] != "NOT" || wordsToSearch[i] != "PERSON" || wordsToSearch[i] != "ORG") {
+                    if( i == wordsToSearch.size()) {
+                        break;
+                    }
 
                     paths.operator=(wordIndex.searchTree(wordsToSearch[i]));
 
@@ -469,9 +501,10 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 // - Total number of articles indexed
                 // - Total words indexed (nodes in the wordIndex avl tree)
                 // - ...timing data???
-                cout << "0. Return to Menu" << endl;
+
+                cout << "K. Return to Menu" << endl;
                 cin >> input;
-                if(input == 0) {
+                if(input == 'K') {
                     continue;
                 }
                 else {
