@@ -338,9 +338,15 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                paths.operator=(wordIndex.searchTree(wordsToSearch[1]));
 
+                std::vector<string> firstWordPaths;
+
                 for(const auto& files : paths) {
-                    cout << files.first << ": " << files.second << std::endl;
+                    firstWordPaths.push_back(files.first);
                 }
+
+                std::sort(firstWordPaths.begin(), firstWordPaths.end());
+
+                std::vector<string> whileLoopPaths;
 
                 while (wordsToSearch[i] != "not" && wordsToSearch[i] != "person" && wordsToSearch[i] != "org") {
                     if(!hasNOT && !hasORG && !hasPERSON) {
@@ -349,24 +355,29 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     // set intersection using for loop
                     unordered_set<std::pair<string, int>, pair_hash> temp;
 
-                    // setting paths to the set of the unordered set that was returned from
+                    // setting temp to the set of the unordered set that was returned from
                     // the search tree function
                     temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
 
-                    auto temp_end = temp.end();
-                    for(auto pairs = temp.begin(); pairs != temp_end; ++pairs) {
-                        for(auto pathsPair = paths.begin(); pathsPair != paths.end(); ++pathsPair) {
-                        auto it = std::find_if(paths.begin(), paths.end(),
-                                               [&pairs](auto& el){ return el.first == pairs->first; });
-                            if(it == paths.end()) {
-                                ;
-                            }
-                            else {
-                                paths.erase(it);
-                            }
-                        }
+                    for(const auto& files : temp) {
+                        whileLoopPaths.push_back(files.first);
                     }
                     i++;
+                }
+
+                std::sort(whileLoopPaths.begin(), whileLoopPaths.end());
+
+                std::vector<string> intersectPaths(100000);
+                std::vector<string>::iterator it;
+
+                it = std::set_intersection(firstWordPaths.begin(), firstWordPaths.end(),
+                                    whileLoopPaths.begin(), whileLoopPaths.end(), intersectPaths.begin());
+                intersectPaths.resize(it - intersectPaths.begin());
+
+
+                cout << "The paths that contain both vehicle and investor are: " << endl;
+                for(const auto& path : intersectPaths) {
+                    cout << path << endl;
                 }
 
                 // getting the words after NOT, PERSON, and ORG
@@ -376,7 +387,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
             }
 
-            // doing operations if set operation is OR case
+            // doing operations if set operation is OR case UNION
             else if(isOR == true && isAND == false) {
 
                 cout << "OR case boolean values - isAND: " << isAND << " isOR: " << isOR <<  endl;
@@ -434,10 +445,15 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 paths.operator=(wordIndex.searchTree(wordsToSearch[1]));
 
+                std::vector<string> firstWordPaths;
+
                 for(const auto& files : paths) {
-                    cout << files.first << ": " << files.second << std::endl;
+                    firstWordPaths.push_back(files.first);
                 }
 
+                std::sort(firstWordPaths.begin(), firstWordPaths.end());
+
+                std::vector<string> whileLoopPaths;
 
                 while (wordsToSearch[i] != "not" && wordsToSearch[i] != "person" && wordsToSearch[i] != "org") {
                     if(!hasNOT && !hasORG && !hasPERSON) {
@@ -451,26 +467,24 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     temp.operator=(wordIndex.searchTree(wordsToSearch[i]));
 
                     for(const auto& files : temp) {
-                        cout << files.first << ": " << files.second << endl;
-                    }
-
-                    auto temp_end = temp.end();
-                    for(auto pairs = temp.begin(); pairs != temp_end; ++pairs) {
-                        for(auto pathsPair = paths.begin(); pathsPair != paths.end(); ++pathsPair) {
-                            auto it = std::find_if(paths.begin(), paths.end(),
-                                                   [&pairs](auto& el){ return el.first == pairs->first; });
-                            if(it == paths.end()) {
-                                std::pair<string, int> newPair;
-                                newPair.first = pairs->first;
-                                newPair.second = pairs->second;
-                                paths.insert(newPair);
-                            }
-                            else {
-                                ; // do nothing
-                            }
-                        }
+                        whileLoopPaths.push_back(files.first);
                     }
                     i++;
+                }
+
+                std::sort(whileLoopPaths.begin(), whileLoopPaths.end());
+
+                std::vector<string> unionPaths(100000);
+                std::vector<string>::iterator it;
+
+                it = std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
+                                    whileLoopPaths.begin(), whileLoopPaths.end(), unionPaths.begin());
+                unionPaths.resize(it - unionPaths.begin());
+
+
+                cout << "The paths that contain vehicle and investor are: " << endl;
+                for(const auto& path : unionPaths) {
+                    cout << path << endl;
                 }
             }
 
