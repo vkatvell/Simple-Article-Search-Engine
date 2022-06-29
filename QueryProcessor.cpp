@@ -190,7 +190,7 @@ std::vector<string> wordsToSearch;
 std::string QueryProcessor::stemQuery(const std::string& input) {
 
     // converting string to wstring
-    std::wstringstream cls; // TODO can do this without stringstream?
+    std::wstringstream cls;
     cls << input.c_str();
     std::wstring total= cls.str();
 
@@ -330,7 +330,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     hasNOT = true;
                     afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
                 }
-                //TODO SET SUBTRACTION WITH TERM AFTER NOT
 
                 std::vector<std::pair<string, int>> notPath;
                 if(hasNOT) {
@@ -822,7 +821,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     hasNOT = true;
                     afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
                 }
-                //TODO SET SUBTRACTION FOR ALL TERMS AFTER NOT
                 std::vector<std::pair<string, int>> notPath;
                 if(hasNOT) {
                     unordered_set<std::pair<string, int>, pair_hash> notPaths;
@@ -873,9 +871,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 personOrgs.resize(poItr - personOrgs.begin());
 
                 auto cleanedVec = eliminateVectorDupes(personOrgs);
-
-                //TODO union with wordIndex paths
-
 
                 unordered_set<std::pair<string, int>, pair_hash> paths;
 
