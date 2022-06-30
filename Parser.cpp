@@ -62,7 +62,7 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> &wordIndex
 
     }
 
-    cout << endl;
+    cout << counter << " articles parsed." << endl;
 }
 
 /**
