@@ -1,6 +1,6 @@
 /**
- * Summer 2022 Search Engine Template
- * includes some example code related to 2341 final project for summer 2022
+ * Summer 2022 Search Engine Final Project
+ * made by Noah Henson and Venkat Vellanki
  */
 #include <iostream>
 #include <iomanip>
