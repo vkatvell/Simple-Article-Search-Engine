@@ -23,10 +23,10 @@ int main(int argc, char **argv) {
 
     SearchEngine s;
 
-//    p.testFileSystem("/Users/noahhenson/Downloads/archive/2018_01_112b52537b67659ad3609a234388c50a");
+    // absolute paths for reference
+//    /Users/noahhenson/Downloads/archive/2018_01_112b52537b67659ad3609a234388c50a
 
-    // absolute path
-//    p.testFileSystem("/Users/venkatsvellanki/Downloads/financial_articles/2018_01_112b52537b67659ad3609a234388c50a/");
+//    /Users/venkatsvellanki/Downloads/financial_articles/2018_01_112b52537b67659ad3609a234388c50a/
 
 
     s.searchForQuery(argv[1]);
