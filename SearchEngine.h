@@ -8,6 +8,8 @@
 #include "AVLTree.h"
 #include "QueryProcessor.h"
 #include "Parser.h"
+#include <chrono>
+using namespace std::chrono;
 
 class SearchEngine {
 private:
