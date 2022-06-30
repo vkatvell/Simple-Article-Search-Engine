@@ -206,7 +206,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         cout << "a. Parse a new dataset" << endl;
         cout << "b. Enter a query" << endl;
         cout << "c. Display number of unique organizations and persons" << endl;
-        cout << "d. Display top 25 words in dataset." << endl;
+        cout << "d. Display top 25 most frequent terms" << endl;
         cout << "e. Exit Search Engine program" << endl;
 
         // reading in user input for menu value
@@ -1089,8 +1089,10 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         if (input == 'd' || input == 'D') {
             std::multimap<int, string> display = swapValueAndKey(allWords);
             int i = 25;
+            cout << "Top 25 Most Frequent Terms" << endl
+                <<  "--------------------------" << endl;
             for(auto it = display.rbegin(); (i != 0); it++){
-                cout << "string: " << it->second << " int: " << it->first << endl;
+                cout << "Term: " << it->second << ". Number of Occurrences: " << it->first << "." << endl;
                 i--;
             }
         }
