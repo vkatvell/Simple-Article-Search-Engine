@@ -477,7 +477,11 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         return right.second < left.second;
                     });
 
-                    if(removedDupes.size() > 15) {
+                    if(removedDupes.size() < 1) {
+                        cout << "Uh oh. There are no search results for that query.\n"
+                        << "Try another query." << endl;
+                    }
+                    else if(removedDupes.size() > 15) {
                         cout << "The top 15 results are: " << endl;
                         for(int i = 0; i < 15; ++i) {
                             cout << letters[i] << " - ";
@@ -488,24 +492,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         string letterInput;
                         cin >> letterInput;
 
-                        bool letterFound = false;
-
-                        while(true) {
-                            cin >> letterInput;
-                            for(int i =0; i < letters.size(); i++) {
-                                if(letterInput == letters[i])
-                                    letterFound = true;
-                                else
-                                    letterFound = false;
-                            }
-                            if(!letterFound) {
-                                cout << "Not a valid input. Please try again." << endl;
-                            }
-                            else{
-                                break;
-                            }
-                        }
-
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
@@ -513,7 +499,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         }
                     }
                     else {
-                        cout << "The paths that contain all search terms are: " << endl;
+                        cout << "The results that contain all search terms are: " << endl;
                         int j = 0;
                         for(const auto& path : removedDupes) {
                             cout << letters[j] << " - ";
@@ -568,7 +554,11 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         return right.second < left.second;
                     });
 
-                    if(removedDupes.size() > 15) {
+                    if(removedDupes.size() < 1) {
+                        cout << "Uh oh. There are no search results for that query.\n"
+                             << "Try another query." << endl;
+                    }
+                    else if(removedDupes.size() > 15) {
                         cout << "The top 15 results are: " << endl;
                         for(int i = 0; i < 15; ++i) {
                             cout << letters[i] << " - ";
@@ -578,24 +568,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         cout << "\nEnter the letter corresponding to the article: ";
                         string letterInput;
                         cin >> letterInput;
-
-                        bool letterFound = false;
-
-                        while(true) {
-                            cin >> letterInput;
-                            for(int i =0; i < letters.size(); i++) {
-                                if(letterInput == letters[i])
-                                    letterFound = true;
-                                else
-                                    letterFound = false;
-                            }
-                            if(!letterFound) {
-                                cout << "Not a valid input. Please try again." << endl;
-                            }
-                            else{
-                                break;
-                            }
-                        }
 
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
@@ -615,24 +587,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         cout << "\nEnter the letter corresponding to the article: ";
                         string letterInput;
                         cin >> letterInput;
-
-                        bool letterFound = false;
-
-                        while(true) {
-                            cin >> letterInput;
-                            for(int i =0; i < letters.size(); i++) {
-                                if(letterInput == letters[i])
-                                    letterFound = true;
-                                else
-                                    letterFound = false;
-                            }
-                            if(!letterFound) {
-                                cout << "Not a valid input. Please try again." << endl;
-                            }
-                            else{
-                                break;
-                            }
-                        }
 
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
@@ -807,12 +761,11 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     return right.second < left.second;
                 });
 
-                if(removedDupes.size() > 15) {
-//                    std::vector<std::pair<string, int>> indices(15);
-//                    std::partial_sort_copy(std::begin(removedDupes), std::end(removedDupes),
-//                                           std::begin(indices), std::end(indices), intCmp{}
-//                    );
-
+                if(removedDupes.size() < 1) {
+                    cout << "Uh oh. There are no search results for that query.\n"
+                         << "Try another query." << endl;
+                }
+                else if(removedDupes.size() > 15) {
                     cout << "The top 15 results are: " << endl;
                     for(int i = 0; i < 15; ++i) {
                         cout << letters[i] << " - ";
@@ -822,24 +775,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     cout << "\nEnter the letter corresponding to the article: ";
                     string letterInput;
                     cin >> letterInput;
-
-                    bool letterFound = false;
-
-                    while(true) {
-                        cin >> letterInput;
-                        for(int i =0; i < letters.size(); i++) {
-                            if(letterInput == letters[i])
-                                letterFound = true;
-                            else
-                                letterFound = false;
-                        }
-                        if(!letterFound) {
-                            cout << "Not a valid input. Please try again." << endl;
-                        }
-                        else{
-                            break;
-                        }
-                    }
 
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
@@ -859,24 +794,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     cout << "\nEnter the letter corresponding to the article: ";
                     string letterInput;
                     cin >> letterInput;
-
-                    bool letterFound = false;
-
-                    while(true) {
-                        cin >> letterInput;
-                        for(int i =0; i < letters.size(); i++) {
-                            if(letterInput == letters[i])
-                                letterFound = true;
-                            else
-                                letterFound = false;
-                        }
-                        if(!letterFound) {
-                            cout << "Not a valid input. Please try again." << endl;
-                        }
-                        else{
-                            break;
-                        }
-                    }
 
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
@@ -1044,12 +961,11 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     return right.second < left.second;
                 });
 
-                if(removedDupes.size() > 15) {
-//                    std::vector<std::pair<string, int>> indices(15);
-//                    std::partial_sort_copy(std::begin(removedDupes), std::end(removedDupes),
-//                                           std::begin(indices), std::end(indices), intCmp{}
-//                    );
-
+                if(removedDupes.size() < 1) {
+                    cout << "Uh oh. There are no search results for that query.\n"
+                         << "Try another query." << endl;
+                }
+                else if(removedDupes.size() > 15) {
                     cout << "The top 15 results are: " << endl;
                     for(int i = 0; i < 15; ++i) {
                         cout << letters[i] << " - ";
@@ -1059,24 +975,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     cout << "\nEnter the letter corresponding to the article: ";
                     string letterInput;
                     cin >> letterInput;
-
-                    bool letterFound = false;
-
-                    while(true) {
-                        cin >> letterInput;
-                        for(int i =0; i < letters.size(); i++) {
-                            if(letterInput == letters[i])
-                                letterFound = true;
-                            else
-                                letterFound = false;
-                        }
-                        if(!letterFound) {
-                            cout << "Not a valid input. Please try again." << endl;
-                        }
-                        else{
-                            break;
-                        }
-                    }
 
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
@@ -1096,24 +994,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     cout << "\nEnter the letter corresponding to the article: ";
                     string letterInput;
                     cin >> letterInput;
-
-                    bool letterFound = false;
-
-                    while(true) {
-                        cin >> letterInput;
-                        for(int i =0; i < letters.size(); i++) {
-                            if(letterInput == letters[i])
-                                letterFound = true;
-                            else
-                                letterFound = false;
-                        }
-                        if(!letterFound) {
-                            cout << "Not a valid input. Please try again." << endl;
-                        }
-                        else{
-                            break;
-                        }
-                    }
 
                     for(int i = 0; i < letters.size(); i++) {
                         if(letterInput == letters[i]) {
@@ -1146,9 +1026,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         }
 
     } // end while loop
-
-
-}
+} //TODO breaks if the first word is ORG or PERSON or NOT
 
 std::vector<std::pair<string, int>> QueryProcessor::eliminateVectorDupes(std::vector<std::pair<string, int>>& unionPaths) {
     for(int i = 0; i < unionPaths.size(); i++)

@@ -9,7 +9,7 @@
  * @param query
  * @param dataset path to where data is stored
  */
-void SearchEngine::searchForQuery(const char* query, const char* dataset) {
+void SearchEngine::searchForQuery(const char* dataset) {
     int count = 0;
 
     // creating inverted index for all of the words, person, orgs

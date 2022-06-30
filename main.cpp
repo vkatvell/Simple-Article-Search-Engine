@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
 //    p.testFileSystem("/Users/venkatsvellanki/Downloads/sample_data_sets/size-6000/");
 
-    s.searchForQuery(argv[1], argv[2]);
+    s.searchForQuery(argv[1]);
 
 
 return 0;
