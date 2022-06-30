@@ -202,6 +202,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
     bool continue_running = true;
 
+    // printing menu options
     while (continue_running) {
         cout << "a. Parse a new dataset" << endl;
         cout << "b. Enter a query" << endl;
@@ -213,6 +214,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         char input;
         cin >> input;
 
+        // error handling for invalid initial menu input
         while (true) {
             if (input != 'A' && input != 'a' && input != 'b' && input != 'B' && input != 'c' && input != 'C' &&
                     input != 'd' && input != 'D' && input != 'e' && input != 'E') {
@@ -224,17 +226,18 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             }
         }
 
+        // exit search menu option
         if (input == 'E' || input == 'e') {
             continue_running = false;
-        } // end menu option -1
+        } // end exit search menu option
 
-        // ending program if user selects -1 option
+        // ending program if user selects exit search menu option
         if (!continue_running) {
             cout << "Thank you for searching. Goodbye..." << endl;
             break;
         }
 
-        // 1. parsing new dataset
+        // option a. parsing a new dataset
         if (input == 'A' || input == 'a') {
             // clear wordIndex, peopleIndex, orgIndex
             AVLTree<string, string> newWordIndex;
@@ -251,32 +254,31 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             string newPath;
 
             cin >> newPath;
+
+            // time spent parsing new dataset
+            auto start = high_resolution_clock::now();
+
             // call parser test file system function and pass in new empty avl trees for
             // three indexes
-            auto start = high_resolution_clock::now();
             p.testFileSystem(newPath.c_str(), newWordIndex, newPersonIndex, newOrgIndex, newCount, allWords);
+
             auto stop = high_resolution_clock::now();
             auto timeToExecMilli = duration_cast<milliseconds>(stop - start);
             auto timeToExecSec = duration_cast<seconds>(stop - start);
             auto timeToExecMin = duration_cast<minutes>(stop - start);
-            // continue and reprint menu
+
+            // printing time spent parsing
             cout << "Done parsing new dataset. Time to parse: " << timeToExecMin.count() << " min "
                  << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
                  << " ms. \nReturning you to main menu..." << endl;
+
+            // continue and reprint menu
             menuSystem(newWordIndex, newPersonIndex, newOrgIndex, allWords);
             break;
-        } // end menu option 1
+        } // end menu option a
 
 
-        // goal search queries:
-        // markets
-        // AND social network
-        // AND social network PERSON cramer
-        // AND social network ORG facebook PERSON cramer
-        // OR snap facebook
-        // OR facebook meta NOT profits
-        // bankruptcy NOT facebook
-        // OR facebook instagram NOT bankruptcy ORG snap PERSON cramer
+        // menu option b for entering a query to search
         if (input == 'B' || input == 'b') {
 
             cin.ignore();
@@ -284,12 +286,11 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             string query;
 
             getline(cin, query);
-            // call readingQueries function
+            // call readingQueries function and starting timer
             auto queryStart = high_resolution_clock::now();
             std::vector<string> wordsToSearch = readingQueries(query);
 
-            unordered_set<std::pair<string, int>, pair_hash> testCase;
-
+            // setting initial query case booleans to false
             bool isAND = false;
             bool isOR = false;
             bool hasNOT = false;
@@ -314,13 +315,13 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 // afterNot is the word that appears after NOT operator
                 string afterNot;
-
                 // afterPerson is the person that appears after PERSON operator
                 string afterPerson;
-
                 // afterOrg is the organization that appears after ORG operator
                 string afterOrg;
 
+                // iterating through the vector of words from query to find NOT
+                // then storing the word  that appears after NOT in afterNot
                 std::vector<string>::iterator itNot;
                 itNot = std::find(wordsToSearch.begin(), wordsToSearch.end(), "not");
                 if (itNot != wordsToSearch.end()) {
@@ -328,48 +329,77 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     afterNot = wordsToSearch[(itNot - wordsToSearch.begin()) + 1];
                 }
 
+                // vector of string, int pair to store all paths and frequencies for afterNot
                 std::vector<std::pair<string, int>> notPath;
+
+                // checking if query has a NOT
                 if (hasNOT) {
+
+                    // searching wordIndex AVL tree for the word and returning all of its paths
+                    // into a new unordered set notPaths
                     unordered_set<std::pair<string, int>, pair_hash> notPaths;
                     notPaths.operator=(wordIndex.searchTree(afterNot));
-//                    cout << notPaths.size() << endl;
+
+                    // pushing back all the paths from notPaths into the vector notPath
                     for (const auto &file: notPaths) {
-//                    notPath.emplace_back(std::pair<string, int>(file.first, file.second));
                         notPath.push_back(std::make_pair(file.first, file.second));
                     }
+
+                    // sorting vector notPath for set operations
                     std::sort(notPath.begin(), notPath.end());
                 }
 
+                // iterating through the vector of words from query to find PERSON
+                // then storing the word that appears after PERSON in afterPerson
                 std::vector<string>::iterator itPerson;
                 itPerson = std::find(wordsToSearch.begin(), wordsToSearch.end(), "person");
                 if (itPerson != wordsToSearch.end()) {
                     hasPERSON = true;
                     afterPerson = wordsToSearch[(itPerson - wordsToSearch.begin()) + 1];
                 }
+
+                // searching wordIndex AVL tree for the person word and returning all of its paths
+                // into a new unordered set personPaths
                 unordered_set<std::pair<string, int>, pair_hash> personPaths;
                 personPaths.operator=(person.searchTree(afterPerson));
 
+                // vector of string, int pair to store all paths and frequencies for afterPerson
                 std::vector<std::pair<string, int>> personPath;
+
+                // pushing back all the paths from personPaths into the vector personPath
                 for (const auto &file: personPaths) {
                     personPath.emplace_back(std::pair<string, int>(file.first, file.second));
                 }
+
+                // sorting vector notPath for set operations
                 std::sort(personPath.begin(), personPath.end());
 
+                // iterating through the vector of words from query to find ORG
+                // then storing the word that appears after ORG in afterOrg
                 std::vector<string>::iterator itOrg;
                 itOrg = std::find(wordsToSearch.begin(), wordsToSearch.end(), "org");
                 if (itOrg != wordsToSearch.end()) {
                     hasORG = true;
                     afterOrg = wordsToSearch[(itOrg - wordsToSearch.begin()) + 1];
                 }
+
+                // searching wordIndex AVL tree for the org word and returning all of its paths
+                // into a new unordered set orgPaths
                 unordered_set<std::pair<string, int>, pair_hash> orgPaths;
                 orgPaths.operator=(orgs.searchTree(afterOrg));
 
+                // vector of string, int pair to store all paths and frequencies for afterOrg
                 std::vector<std::pair<string, int>> orgPath;
+
+                // pushing back all the paths from orgPaths into the vector orgPath
                 for (const auto &file: orgPaths) {
                     orgPath.emplace_back(std::pair<string, int>(file.first, file.second));
                 }
+
+                // sorting vector notPath for set operations
                 std::sort(orgPath.begin(), orgPath.end());
 
+                // vector for eliminated duplicate strings between personPath vector and orgPath vector
                 std::vector<std::pair<string, int>> cleanedVec;
 
                 // intersection of person and org paths and cases
@@ -389,26 +419,32 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     hasORG = false;
                 }
 
+                // sorting cleanedVec for set operations
                 std::sort(cleanedVec.begin(), cleanedVec.end());
 
                 // while loop that starts calling searchTree function for each word until it reaches NOT, PERSON, or ORG
                 // then performs set intersection
                 int m = 2;
 
+                // paths holds all paths and frequency for the first word in the query thats not AND or OR
                 unordered_set<std::pair<string, int>, pair_hash> paths;
-
                 paths.operator=(wordIndex.searchTree(wordsToSearch[1]));
-
+                // vector for all of the paths from the first word
                 std::vector<std::pair<string, int>> firstWordPaths;
 
+                // pushing back all paths from unordered set into the vector
                 for (const auto &files: paths) {
                     firstWordPaths.emplace_back(std::pair<string, int>(files.first, files.second));
                 }
 
+                // sorting the vector
                 std::sort(firstWordPaths.begin(), firstWordPaths.end());
 
+                // vector for all words after AND and first word in search query
                 std::vector<std::pair<string, int>> whileLoopPaths;
 
+                // if there is no NOT, ORG, or PERSON in query it will only perform intersection
+                // with the firstWordPaths and words from whileLoopPaths
                 if (!hasNOT && !hasORG && !hasPERSON) {
                     while (m < wordsToSearch.size()) {
                         // set intersection using for loop
@@ -423,8 +459,9 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         }
                         m++;
                     }
-                } else {
+                } else {    // else case means that the query has one of NOT, PERSON, or org
                     while (wordsToSearch[m] != "not" && wordsToSearch[m] != "person" && wordsToSearch[m] != "org") {
+                        // extra test case to break the while loop if query has PERSON, NOT, or org to make sure
                         if (!hasNOT && !hasORG && !hasPERSON) {
                             break;
                         }
@@ -442,44 +479,53 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     }
                 }
 
+                // sorting all paths in teh whileLoopPaths vector
                 std::sort(whileLoopPaths.begin(), whileLoopPaths.end());
 
+                // wordPaths performs set intersection between the paths in firstWordPaths and whileLoopPaths
                 std::vector<std::pair<string, int>> wordPaths;
-
                 std::set_intersection(firstWordPaths.begin(), firstWordPaths.end(),
                                       whileLoopPaths.begin(), whileLoopPaths.end(), std::back_inserter(wordPaths),
                                       comparator{});
 
-                //wordPaths.resize(it - wordPaths.begin());
-
+                // removing duplicates in wordPaths and storing in a cleaned vector
                 auto cleanedWordPaths = eliminateVectorDupes(wordPaths);
 
-
+                // if the query has PERSON or ORG, performing intersection with the personOrg cleanedVec
+                // and cleanedWordPaths
                 if (hasPERSON || hasORG) {
                     std::vector<std::pair<string, int>> intersectPaths;
                     std::set_intersection(cleanedWordPaths.begin(), cleanedWordPaths.end(),
                                           cleanedVec.begin(), cleanedVec.end(),
                                           std::back_inserter(intersectPaths), comparator{});
 
+                    // cleaning all intersected paths to ensure no duplicates after intersection
                     auto cleaningIntersectPaths = eliminateVectorDupes(intersectPaths);
 
+                    // declaring removedDupes for results to be returned
                     std::vector<std::pair<string, int>> removedDupes;
+
+                    // if the query has NOT, time to pereform set difference for the NOT paths
                     if (hasNOT) {
                         std::vector<std::pair<string, int>> NOTsubtracted;
 
+                        // performing set difference and storing the result in NOTsubtracted
                         std::set_difference(cleaningIntersectPaths.begin(), cleaningIntersectPaths.end(),
                                             notPath.begin(), notPath.end(),
                                             std::back_inserter(NOTsubtracted), comparator{});
 
+                        // removing duplicates in the NOTsubtracted and returning in removedDupes
                         removedDupes = eliminateVectorDupes(NOTsubtracted);
-                    } else {
+                    } else { // if the query does not have NOT just return the intersectedPaths in removedDupes
                         removedDupes = eliminateVectorDupes(cleaningIntersectPaths);
                     }
 
+                    // sorting removedDupes based on second element (term frequency) for relevancy ranking
                     std::sort(removedDupes.begin(), removedDupes.end(), [](auto &left, auto &right) {
                         return right.second < left.second;
                     });
 
+                    // if there are no search results then return message for no search results
                     if (removedDupes.size() < 1) {
                         auto queryStop = high_resolution_clock::now();
                         auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
@@ -492,7 +538,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                         cout << "Uh oh. There are no search results for that query.\n"
                              << "Try another query." << endl;
-                    } else if (removedDupes.size() > 15) {
+                    } else if (removedDupes.size() > 15) {      // if there are more than 15 results than print top 15
                         auto queryStop = high_resolution_clock::now();
                         auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
                         auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
@@ -515,7 +561,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                                 accessedArticle(removedDupes[i].first);
                             }
                         }
-                    } else {
+                    } else {    // if there are less than 15 results and greater or equal to 1 then print all results
                         auto queryStop = high_resolution_clock::now();
                         auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
                         auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
@@ -542,7 +588,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                             }
                         }
                     }
-                } else {
+                } else {        // if the query does not have PERSON or ORG then go through test cases above with NOT
                     std::vector<std::pair<string, int>> removedDupes;
                     if (hasNOT) {
                         std::vector<std::pair<string, int>> NOTsubtracted;
@@ -624,25 +670,26 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     }
                 }
 
-                // getting the words after NOT, PERSON, and ORG
+                // setting the booleans to false for next search
                 hasORG = false;
                 hasPERSON = false;
                 hasNOT = false;
 
             }
 
-                // doing operations if set operation is OR case UNION
+            // doing operations if set operation is OR case UNION
             else if (isOR && !isAND) {
                 // afterNot is the word that appears after NOT operator
                 string afterNot;
-
                 // afterPerson is the person that appears after PERSON operator
                 string afterPerson;
-
                 // afterOrg is the organization that appears after ORG operator
                 string afterOrg;
 
                 // getting the words after NOT, PERSON, and ORG
+                // and creating vector of paths for the words after each
+                // operator if they are in query
+                // also sorting and cleaning the vectors to perform set union operation
                 std::vector<string>::iterator itNot;
                 itNot = std::find(wordsToSearch.begin(), wordsToSearch.end(), "not");
                 if (itNot != wordsToSearch.end()) {
@@ -654,9 +701,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 if (hasNOT) {
                     unordered_set<std::pair<string, int>, pair_hash> notPaths;
                     notPaths.operator=(wordIndex.searchTree(afterNot));
-//                    cout << notPaths.size() << endl;
                     for (const auto &file: notPaths) {
-//                    notPath.emplace_back(std::pair<string, int>(file.first, file.second));
                         notPath.push_back(std::make_pair(file.first, file.second));
                     }
                     std::sort(notPath.begin(), notPath.end());
@@ -692,8 +737,9 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
                 std::sort(orgPath.begin(), orgPath.end());
 
+
                 // union of person and org paths
-                std::vector<std::pair<string, int>> personOrgs(500000);
+                std::vector<std::pair<string, int>> personOrgs(500000); //TODO change the size aspect of this
                 auto poItr = std::set_union(personPath.begin(), personPath.end(),
                                             orgPath.begin(), orgPath.end(), personOrgs.begin());
 
@@ -706,20 +752,26 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 // then performs set intersection
                 int m = 2;
 
+                // getting first word in query after OR
                 unordered_set<std::pair<string, int>, pair_hash> paths;
 
                 paths.operator=(wordIndex.searchTree(wordsToSearch[1]));
 
+                // vector for the first word's paths
                 std::vector<std::pair<string, int>> firstWordPaths;
-
                 for (const auto &files: paths) {
                     firstWordPaths.emplace_back(files.first, files.second);
                 }
 
+                // sorting that vector of first word's paths
                 std::sort(firstWordPaths.begin(), firstWordPaths.end());
 
+                // vector for all the words' paths that appear after first word
+                // and before NOT, PERSON, or ORG
                 std::vector<std::pair<string, int>> whileLoopPaths;
 
+                // if NOT ORG PERSON not in query then just perform union
+                // for first word paths and the paths of all words in while loop paths
                 if (!hasNOT && !hasORG && !hasPERSON) {
                     while (m < wordsToSearch.size()) {
                         // set union using for loop
@@ -734,7 +786,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         }
                         m++;
                     }
-                } else {
+                } else {    // if the word has PERSON ORG or NOT
                     while (wordsToSearch[m] != "not" && wordsToSearch[m] != "person" && wordsToSearch[m] != "org") {
                         if (!hasNOT && !hasORG && !hasPERSON) {
                             break;
@@ -753,22 +805,28 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     }
                 }
 
+                // sorting the while loop paths for set operations
                 std::sort(whileLoopPaths.begin(), whileLoopPaths.end());
 
+                // set union for all word paths with first word paths and while loop paths
                 std::vector<std::pair<string, int>> wordPaths;
 
                 std::set_union(firstWordPaths.begin(), firstWordPaths.end(), whileLoopPaths.begin(),
                                whileLoopPaths.end(), std::back_inserter(wordPaths), comparator{});
 
+                // removing duplicates from the unionized vector of wordPaths
                 auto cleaningWordPaths = eliminateVectorDupes(wordPaths);
 
                 std::vector<std::pair<string, int>> unionPaths;
 
+                // unionizing the cleaned vector paths
                 std::set_union(cleaningWordPaths.begin(), cleaningWordPaths.end(), cleanedVec.begin(),
                                cleanedVec.end(), std::back_inserter(unionPaths), comparator{});
 
+                // cleaning the unionized paths again
                 auto cleaningUnionPaths = eliminateVectorDupes(unionPaths);
 
+                // handling NOT case with set difference
                 std::vector<std::pair<string, int>> removedDupes;
                 if (hasNOT) {
                     std::vector<std::pair<string, int>> NOTsubtracted;
@@ -787,6 +845,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     return right.second < left.second;
                 });
 
+                // printing of search results
                 if (removedDupes.size() < 1) {
                     auto queryStop = high_resolution_clock::now();
                     auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
@@ -855,10 +914,8 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             if (!isAND && !isOR) {
                 // afterNot is the word that appears after NOT operator
                 string afterNot;
-
                 // afterPerson is the person that appears after PERSON operator
                 string afterPerson;
-
                 // afterOrg is the organization that appears after ORG operator
                 string afterOrg;
 
@@ -866,6 +923,8 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 hasPERSON = false;
                 hasORG = false;
 
+                // finding the NOT ORG PERSON cases in the search query and storing
+                // for set difference operation later
                 std::vector<string>::iterator itNot;
                 itNot = std::find(wordsToSearch.begin(), wordsToSearch.end(), "not");
                 if (itNot != wordsToSearch.end()) {
@@ -935,6 +994,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 int m = 1;
 
+                // if the query does not have NOT ORG or PERSON performing union for just the word
                 if (!hasNOT && !hasORG && !hasPERSON) {
                     while (m < wordsToSearch.size()) {
                         // set union using for loop
@@ -984,6 +1044,8 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 auto cleaningUnionPaths = eliminateVectorDupes(unionPaths);
 
                 std::vector<std::pair<string, int>> removedDupes;
+
+                // checking and handling NOT cases
                 if (hasNOT) {
                     std::vector<std::pair<string, int>> NOTsubtracted;
 
@@ -1001,6 +1063,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     return right.second < left.second;
                 });
 
+                // printing the results
                 if (removedDupes.size() < 1) {
                     auto queryStop = high_resolution_clock::now();
                     auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
@@ -1065,11 +1128,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 }
             }
 
-            // print statistics
-            // - Total number of articles indexed
-            // - Total words indexed (nodes in the wordIndex avl tree)
-            // - ...timing data???
-
+            // return to menu option after reading a specific article
             while (true) {
                 cout << "q. Return to Menu" << endl;
                 cin >> input;
@@ -1080,12 +1139,15 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     continue;
                 }
             }
+        } // end menu option b
 
-        } // end menu option 2
+        // menu option c for printing statistics of unique ORGs and PERSONS
         if (input == 'c' || input == 'C') {
             cout << "Number of unique organizations: " << orgs.getSize() << ". Number of unique pesons: "
                  << person.getSize() << ". Number of unique words: " << wordIndex.getSize() << "." << endl;
         }
+
+        // menu option d for printing top 25 most frequently occurring words in the entire dataset
         if (input == 'd' || input == 'D') {
             std::multimap<int, string> display = swapValueAndKey(allWords);
             int i = 25;
@@ -1103,8 +1165,10 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         }
 
     } // end while loop
-} //TODO breaks if the first word is ORG or PERSON or NOT
+}
 
+// eliminating duplicate vectors got code from someone on stackoverflow
+// https://stackoverflow.com/questions/16476099/remove-duplicate-entries-in-a-c-vector
 std::vector<std::pair<string, int>>
 QueryProcessor::eliminateVectorDupes(std::vector<std::pair<string, int>> &unionPaths) {
     for (int i = 0; i < unionPaths.size(); i++) {
@@ -1133,6 +1197,8 @@ QueryProcessor::eliminateVectorDupes(std::vector<std::pair<string, int>> &unionP
     return unionPaths;
 }
 
+// result articles returns the articles
+// title, publisher, and date given a path
 void QueryProcessor::resultArticles(const string &inputPath) {
     //open an ifstream on the file of interest and check that it could be opened.
     std::ifstream input(inputPath.c_str());
@@ -1164,6 +1230,8 @@ void QueryProcessor::resultArticles(const string &inputPath) {
 
 }
 
+// accessed article returns the text for an article
+// if user selects that specific article
 void QueryProcessor::accessedArticle(const string &filePath) {
     //open an ifstream on the file of interest and check that it could be opened.
     std::ifstream input(filePath.c_str());
@@ -1200,30 +1268,3 @@ void QueryProcessor::accessedArticle(const string &filePath) {
 
 }
 // end function
-
-// examples from class with stringstream
-/*
- * stringstream ss;
- * ss << "SMU TCU UTD";
- * char buffer[10];
- * ss >> buffer;
- * cout << buffer; // prints SMU
- */
-
-/*
- * stringstream ss = doc["text"].GetString();
- */
-
-/*
- * create menu system that will allow user to process queries
- * 1. parse
- * 2. Enter query
- * 3. exit
- * > 2
- *      AND Boston Chicago NOT PERSON Mark
- *
- *   (query returns a relevancy list of documents that contain the words
- *   from query and allows user to select a document -> which then would
- *   call printResult function to show user relevant information from the
- *   target
- */
