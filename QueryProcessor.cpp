@@ -1089,11 +1089,16 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         if (input == 'd' || input == 'D') {
             std::multimap<int, string> display = swapValueAndKey(allWords);
             int i = 25;
+            int j = 1;
             cout << "Top 25 Most Frequent Terms" << endl
                 <<  "--------------------------" << endl;
             for(auto it = display.rbegin(); (i != 0); it++){
-                cout << "Term: " << it->second << ". Number of Occurrences: " << it->first << "." << endl;
+                if(i == 25) {
+                    it++;
+                }
+                cout << j << ". Term: " << it->second << " occurs " << it->first << " times." << endl;
                 i--;
+                j++;
             }
         }
 
