@@ -10,12 +10,6 @@ using std::cin;
 using std::cout;
 using std::endl;
 
-struct intCmp {
-    bool operator()(std::pair<string, int>& a, std::pair<string, int>& b) {
-        return b.second < a.second;
-    }
-};
-
 struct comparator {
     bool operator()(std::pair<string,int>& a, std::pair<string, int>& b) {
 //        if(b.second < a.second) {
