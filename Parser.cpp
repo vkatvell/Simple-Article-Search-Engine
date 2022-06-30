@@ -11,6 +11,7 @@
 #include <string>
 #include <sstream>
 #include <unordered_map>
+#include <map>
 #include <vector>
 #include "AVLTree.h"
 
@@ -36,7 +37,7 @@ Parser::Parser() = default;
  * you want to parse.
  */
 void Parser::testFileSystem(const char *path, AVLTree<string, string> &wordIndex, AVLTree<string, string> &personIndex,
-                            AVLTree<string, string> &orgIndex, int &counter) {
+                            AVLTree<string, string> &orgIndex, int &counter, std::unordered_map<string, int>& temp) {
 
     //recursive_director_iterator used to "access" folder at parameter -path-
     //we are using the recursive iterator so it will go into subfolders.
@@ -44,6 +45,9 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> &wordIndex
 
     //read in stop words to be removed
     std::unordered_map<string, int> stopWords = readingStopWords("sample_data/stopwords.txt");
+
+    //clear the unordered map for new word input
+    temp.clear();
 
     //loop over all the entries.
     for (const auto &entry: it) {
@@ -53,7 +57,7 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> &wordIndex
         //We only want to attempt to parse files that end with .json...
         if (entry.is_regular_file() && entry.path().extension().string() == ".json") {
             counter++; //counter for total docs
-            testReadJsonFile(wordIndex, personIndex, orgIndex, entry.path().c_str(), stopWords, counter);
+            testReadJsonFile(wordIndex, personIndex, orgIndex, entry.path().c_str(), stopWords, counter, temp);
         }
 
     }
@@ -68,7 +72,7 @@ void Parser::testFileSystem(const char *path, AVLTree<string, string> &wordIndex
  */
 void Parser::testReadJsonFile(AVLTree<string, string> &wordIndex, AVLTree<string, string> &personIndex,
                               AVLTree<string, string> &orgIndex, const char *fileName,
-                              const std::unordered_map<string, int> &stopWords, int &counter) {
+                              const std::unordered_map<string, int> &stopWords, int &counter, std::unordered_map<string, int>& allWords) {
 
     //open an ifstream on the file of interest and check that it could be opened.
     ifstream input(fileName);
@@ -162,6 +166,11 @@ void Parser::testReadJsonFile(AVLTree<string, string> &wordIndex, AVLTree<string
     results.first = fileName;
     while (it != stemmed_map.end()) {
         results.second = it->second;
+        int ct = it->second;
+        while(ct > 0) {
+            ++allWords[it->first];
+            ct--;
+        }
         wordIndex.insert(it->first, results); //filepath becomes a pair with filepath and it->second
         it++;
     }

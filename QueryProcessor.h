@@ -32,7 +32,7 @@ public:
     static void toLower(std::string &input);
 // void printResults(const char* pathtoarticle);
 
-    void menuSystem(AVLTree<string, string> &, AVLTree<string, string> &, AVLTree<string, string> &);
+    void menuSystem(AVLTree<string, string> &, AVLTree<string, string> &, AVLTree<string, string> &, std::unordered_map<string, int>&);
 
     std::vector<std::pair<string, int>> eliminateVectorDupes(std::vector<std::pair<string, int>> &pathsVec);
 

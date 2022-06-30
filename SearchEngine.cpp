@@ -3,6 +3,7 @@
 //
 
 #include "SearchEngine.h"
+#include <map>
 
 using std::endl;
 
@@ -13,6 +14,9 @@ using std::endl;
  */
 void SearchEngine::searchForQuery(const char *dataset) {
     int count = 0;
+
+    //map of all words
+    std::unordered_map<string, int> allWords;
 
     // creating inverted index for all of the words, person, orgs
     AVLTree<string, string> wordIndex;
@@ -35,7 +39,7 @@ void SearchEngine::searchForQuery(const char *dataset) {
     auto start = high_resolution_clock::now();
 
     // calling testFileSystem and getting all the words inserted into wordIndex
-    p.testFileSystem(dataset, wordIndex, personIndex, orgIndex, count);
+    p.testFileSystem(dataset, wordIndex, personIndex, orgIndex, count, allWords);
 
     // ending timer
     auto stop = high_resolution_clock::now();
@@ -46,7 +50,7 @@ void SearchEngine::searchForQuery(const char *dataset) {
          << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
          << " ms. \nNow displaying main menu...\n" << std::endl;
 
-    q.menuSystem(wordIndex, personIndex, orgIndex);
+    q.menuSystem(wordIndex, personIndex, orgIndex, allWords);
 
 
     // making char* query into a string

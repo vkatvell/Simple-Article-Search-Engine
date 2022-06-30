@@ -4,6 +4,8 @@
 
 #include "QueryProcessor.h"
 #include <chrono>
+#include <unordered_map>
+#include <map>
 
 using namespace std::chrono;
 using std::string;
@@ -180,8 +182,21 @@ void QueryProcessor::toLower(string &input) {
                    [](unsigned char c) { return std::tolower(c); });
 }
 
+//swaps the keys and values of a map
+std::multimap<int, string> swapValueAndKey(std::unordered_map<string, int> const& map) {
+    std::multimap<int, string> multiMap;
+    //read through unordered map and push back values and keys
+    for(auto const& p : map) {
+        multiMap.insert(make_pair(p.second, p.first));
+    }
+
+    return multiMap;
+}
+
+
+
 void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<string, string> &person,
-                                AVLTree<string, string> &orgs) {
+                                AVLTree<string, string> &orgs, std::unordered_map<string, int>& allWords) {
     // parse dataset first before calling this function
     cout << "Welcome to Noah and Venkat's Financial Article Search Engine" << endl;
 
@@ -191,6 +206,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         cout << "a. Parse a new dataset" << endl;
         cout << "b. Enter a query" << endl;
         cout << "c. Display number of unique organizations and persons" << endl;
+        cout << "d. Display top 25 words in dataset." << endl;
         cout << "e. Exit Search Engine program" << endl;
 
         // reading in user input for menu value
@@ -199,7 +215,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
         while (true) {
             if (input != 'A' && input != 'a' && input != 'b' && input != 'B' && input != 'c' && input != 'C' &&
-                input != 'e' && input != 'E') {
+                    input != 'd' && input != 'D' && input != 'e' && input != 'E') {
                 cout << "Invalid input. Please try again." << endl;
                 cin >> input;
                 continue;
@@ -238,7 +254,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             // call parser test file system function and pass in new empty avl trees for
             // three indexes
             auto start = high_resolution_clock::now();
-            p.testFileSystem(newPath.c_str(), newWordIndex, newPersonIndex, newOrgIndex, newCount);
+            p.testFileSystem(newPath.c_str(), newWordIndex, newPersonIndex, newOrgIndex, newCount, allWords);
             auto stop = high_resolution_clock::now();
             auto timeToExecMilli = duration_cast<milliseconds>(stop - start);
             auto timeToExecSec = duration_cast<seconds>(stop - start);
@@ -247,7 +263,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
             cout << "Done parsing new dataset. Time to parse: " << timeToExecMin.count() << " min "
                  << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
                  << " ms. \nReturning you to main menu..." << endl;
-            menuSystem(newWordIndex, newPersonIndex, newOrgIndex);
+            menuSystem(newWordIndex, newPersonIndex, newOrgIndex, allWords);
             break;
         } // end menu option 1
 
@@ -1069,6 +1085,14 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
         if (input == 'c' || input == 'C') {
             cout << "Number of unique organizations: " << orgs.getSize() << ". Number of unique pesons: "
                  << person.getSize() << endl;
+        }
+        if (input == 'd' || input == 'D') {
+            std::multimap<int, string> display = swapValueAndKey(allWords);
+            int i = 25;
+            for(auto it = display.rbegin(); (i != 0); it++){
+                cout << "string: " << it->second << " int: " << it->first << endl;
+                i--;
+            }
         }
 
     } // end while loop
