@@ -3,6 +3,7 @@
 //
 
 #include "SearchEngine.h"
+
 using std::endl;
 
 /**
@@ -10,7 +11,7 @@ using std::endl;
  * @param query
  * @param dataset path to where data is stored
  */
-void SearchEngine::searchForQuery(const char* dataset) {
+void SearchEngine::searchForQuery(const char *dataset) {
     int count = 0;
 
     // creating inverted index for all of the words, person, orgs
@@ -38,8 +39,8 @@ void SearchEngine::searchForQuery(const char* dataset) {
     auto timeToExecSec = duration_cast<seconds>(stop - start);
     auto timeToExecMin = duration_cast<minutes>(stop - start);
     cout << "Done parsing initial dataset.\n\nThe time to parse was: " << timeToExecMin.count()
-    << " min " << timeToExecSec.count()%60 << " sec " << timeToExecMilli.count()%1000
-    << " ms. \nNow displaying main menu...\n" << std::endl;
+         << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+         << " ms. \nNow displaying main menu...\n" << std::endl;
 
     q.menuSystem(wordIndex, personIndex, orgIndex);
 

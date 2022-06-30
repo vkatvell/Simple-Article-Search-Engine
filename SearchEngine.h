@@ -9,6 +9,7 @@
 #include "QueryProcessor.h"
 #include "Parser.h"
 #include <chrono>
+
 using namespace std::chrono;
 
 class SearchEngine {
@@ -16,7 +17,7 @@ private:
 
 public:
     //Controller for calling the functions of the search engine (query, indexer, parser)
-    void searchForQuery(const char* dataset);
+    void searchForQuery(const char *dataset);
 };
 
 
