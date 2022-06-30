@@ -269,6 +269,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
             getline(cin, query);
             // call readingQueries function
+            auto queryStart = high_resolution_clock::now();
             std::vector<string> wordsToSearch = readingQueries(query);
 
             unordered_set<std::pair<string, int>, pair_hash> testCase;
@@ -464,14 +465,30 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     });
 
                     if (removedDupes.size() < 1) {
+                        auto queryStop = high_resolution_clock::now();
+                        auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                        auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                        auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                        cout << "\nThe time to search was: " << timeToExecMin.count()
+                             << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                             << " ms." << std::endl;
+                        cout << endl;
+
                         cout << "Uh oh. There are no search results for that query.\n"
                              << "Try another query." << endl;
                     } else if (removedDupes.size() > 15) {
+                        auto queryStop = high_resolution_clock::now();
+                        auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                        auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                        auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                        cout << "\nThe time to search was: " << timeToExecMin.count()
+                             << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                             << " ms." << std::endl;
+                        cout << endl;
                         cout << "The top 15 results are: " << endl;
                         for (int i = 0; i < 15; ++i) {
                             cout << letters[i] << " - ";
                             resultArticles(removedDupes[i].first);
-                            cout << endl;
                         }
                         cout << "\nEnter the letter corresponding to the article: ";
                         string letterInput;
@@ -483,6 +500,14 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                             }
                         }
                     } else {
+                        auto queryStop = high_resolution_clock::now();
+                        auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                        auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                        auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                        cout << "\nThe time to search was: " << timeToExecMin.count()
+                             << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                             << " ms." << std::endl;
+                        cout << endl;
                         cout << "The results that contain all search terms are: " << endl;
                         int j = 0;
                         for (const auto &path: removedDupes) {
@@ -520,9 +545,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     });
 
                     if (removedDupes.size() < 1) {
+                        auto queryStop = high_resolution_clock::now();
+                        auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                        auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                        auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                        cout << "\nThe time to search was: " << timeToExecMin.count()
+                             << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                             << " ms." << std::endl;
+                        cout << endl;
                         cout << "Uh oh. There are no search results for that query.\n"
                              << "Try another query." << endl;
                     } else if (removedDupes.size() > 15) {
+                        auto queryStop = high_resolution_clock::now();
+                        auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                        auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                        auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                        cout << "\nThe time to search was: " << timeToExecMin.count()
+                             << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                             << " ms." << std::endl;
+                        cout << endl;
                         cout << "The top 15 results are: " << endl;
                         for (int i = 0; i < 15; ++i) {
                             cout << letters[i] << " - ";
@@ -539,6 +580,14 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                             }
                         }
                     } else {
+                        auto queryStop = high_resolution_clock::now();
+                        auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                        auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                        auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                        cout << "\nThe time to search was: " << timeToExecMin.count()
+                             << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                             << " ms." << std::endl;
+                        cout << endl;
                         cout << "The results that contain all search terms are: " << endl;
                         int j = 0;
                         for (const auto &path: removedDupes) {
@@ -696,23 +745,11 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                                whileLoopPaths.end(), std::back_inserter(wordPaths), comparator{});
 
                 auto cleaningWordPaths = eliminateVectorDupes(wordPaths);
-//                std::vector<std::pair<string, int>> wordPaths(500000);
-//                std::vector<std::pair<string, int>>::iterator it;
 
-//                it = std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
-//                                           whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin());
-//                wordPaths.resize(it - wordPaths.begin());
-
-//                std::vector<std::pair<string, int>> unionPaths(500000);
                 std::vector<std::pair<string, int>> unionPaths;
 
                 std::set_union(cleaningWordPaths.begin(), cleaningWordPaths.end(), cleanedVec.begin(),
                                cleanedVec.end(), std::back_inserter(unionPaths), comparator{});
-
-//                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
-//                                    cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
-//                unionPaths.resize(itr - unionPaths.begin());
-
 
                 auto cleaningUnionPaths = eliminateVectorDupes(unionPaths);
 
@@ -735,9 +772,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 });
 
                 if (removedDupes.size() < 1) {
+                    auto queryStop = high_resolution_clock::now();
+                    auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                    auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                    auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                    cout << "\nThe time to search was: " << timeToExecMin.count()
+                         << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                         << " ms." << std::endl;
+                    cout << endl;
                     cout << "Uh oh. There are no search results for that query.\n"
                          << "Try another query." << endl;
                 } else if (removedDupes.size() > 15) {
+                    auto queryStop = high_resolution_clock::now();
+                    auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                    auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                    auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                    cout << "\nThe time to search was: " << timeToExecMin.count()
+                         << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                         << " ms." << std::endl;
+                    cout << endl;
                     cout << "The top 15 results are: " << endl;
                     for (int i = 0; i < 15; ++i) {
                         cout << letters[i] << " - ";
@@ -754,7 +807,15 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         }
                     }
                 } else {
-                    cout << "The results that contain all search terms are: " << endl;
+                    auto queryStop = high_resolution_clock::now();
+                    auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                    auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                    auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                    cout << "\nThe time to search was: " << timeToExecMin.count()
+                         << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                         << " ms." << std::endl;
+                    cout << endl;
+                    cout << "The results that contain one or more search terms are: " << endl;
                     int j = 0;
                     for (const auto &path: removedDupes) {
                         cout << letters[j] << " - ";
@@ -785,7 +846,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 // afterOrg is the organization that appears after ORG operator
                 string afterOrg;
 
-
                 hasNOT = false;
                 hasPERSON = false;
                 hasORG = false;
@@ -800,9 +860,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 if (hasNOT) {
                     unordered_set<std::pair<string, int>, pair_hash> notPaths;
                     notPaths.operator=(wordIndex.searchTree(afterNot));
-//                    cout << notPaths.size() << endl;
                     for (const auto &file: notPaths) {
-//                    notPath.emplace_back(std::pair<string, int>(file.first, file.second));
                         notPath.push_back(std::make_pair(file.first, file.second));
                     }
                     std::sort(notPath.begin(), notPath.end());
@@ -839,12 +897,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 std::sort(orgPath.begin(), orgPath.end());
 
                 // union of person and org paths
-//                std::vector<std::pair<string,int>> personOrgs(100000);
-//                auto poItr = std::set_union(personPath.begin(), personPath.end(),
-//                                            orgPath.begin(), orgPath.end(), personOrgs.begin());
-//
-//                personOrgs.resize(poItr - personOrgs.begin());
-
                 std::vector<std::pair<string, int>> personOrgs;
                 std::set_union(personPath.begin(), personPath.end(), orgPath.begin(),
                                orgPath.end(), std::back_inserter(personOrgs), comparator{});
@@ -909,22 +961,9 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 auto cleaningWordPaths = eliminateVectorDupes(wordPaths);
 
-//                std::vector<std::pair<string, int>> wordPaths(100000);
-//                std::vector<std::pair<string, int>>::iterator it;
-//
-//                it = std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
-//                                    whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin());
-//                wordPaths.resize(it - wordPaths.begin());
-
-//                std::vector<std::pair<string, int>> unionPaths(100000);
-
                 std::vector<std::pair<string, int>> unionPaths;
                 std::set_union(cleaningWordPaths.begin(), cleaningWordPaths.end(),
                                cleanedVec.begin(), cleanedVec.end(), std::back_inserter(unionPaths), comparator{});
-
-//                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
-//                                          cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
-//                unionPaths.resize(itr - unionPaths.begin());
 
                 auto cleaningUnionPaths = eliminateVectorDupes(unionPaths);
 
@@ -947,9 +986,25 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 });
 
                 if (removedDupes.size() < 1) {
+                    auto queryStop = high_resolution_clock::now();
+                    auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                    auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                    auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                    cout << "\nThe time to search was: " << timeToExecMin.count()
+                         << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                         << " ms." << std::endl;
+                    cout << endl;
                     cout << "Uh oh. There are no search results for that query.\n"
                          << "Try another query." << endl;
                 } else if (removedDupes.size() > 15) {
+                    auto queryStop = high_resolution_clock::now();
+                    auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                    auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                    auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                    cout << "\nThe time to search was: " << timeToExecMin.count()
+                         << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                         << " ms." << std::endl;
+                    cout << endl;
                     cout << "The top 15 results are: " << endl;
                     for (int i = 0; i < 15; ++i) {
                         cout << letters[i] << " - ";
@@ -966,7 +1021,15 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         }
                     }
                 } else {
-                    cout << "The results that contain all search terms are: " << endl;
+                    auto queryStop = high_resolution_clock::now();
+                    auto timeToExecMilli = duration_cast<milliseconds>(queryStop - queryStart);
+                    auto timeToExecSec = duration_cast<seconds>(queryStop - queryStart);
+                    auto timeToExecMin = duration_cast<minutes>(queryStop - queryStart);
+                    cout << "\nThe time to search was: " << timeToExecMin.count()
+                         << " min " << timeToExecSec.count() % 60 << " sec " << timeToExecMilli.count() % 1000
+                         << " ms." << std::endl;
+                    cout << endl;
+                    cout << "The results that with one or more search terms are: " << endl;
                     int j = 0;
                     for (const auto &path: removedDupes) {
                         cout << letters[j] << " - ";

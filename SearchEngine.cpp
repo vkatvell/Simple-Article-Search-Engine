@@ -23,9 +23,13 @@ void SearchEngine::searchForQuery(const char *dataset) {
     Parser p;
     QueryProcessor q;
 
-    cout << "-------------------------------------------" << endl;
-    cout << "------ Welcome to our Search Engine ------" << endl;
-    cout << "-------------------------------------------" << endl;
+    cout << "********************************************************" << endl;
+    cout << "********************************************************" << endl;
+    cout << "*****                                              *****" << endl;
+    cout << "****   Welcome to Noah and Venkat's Search Engine   ****" << endl;
+    cout << "*****                                              *****" << endl;
+    cout << "********************************************************" << endl;
+    cout << "********************************************************" << endl;
 
     // starting timer
     auto start = high_resolution_clock::now();
