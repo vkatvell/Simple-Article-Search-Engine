@@ -337,6 +337,7 @@ typename AVLTree<K, V>::AVLNode *AVLTree<K, V>::nodeCopy(AVLTree<K, V>::AVLNode 
     if (curr != nullptr) { //loop through the tree while the key still exists
         AVLNode *left = nodeCopy(curr->left);
         AVLNode *right = nodeCopy(curr->right);
+        //copy constructor node returned
         return new AVLNode(curr->key, curr->value, left, right, curr->height);
     } else
         return nullptr;
@@ -381,14 +382,27 @@ unordered_set<std::pair<V, int>, pair_hash> AVLTree<K, V>::searchTree(AVLTree::A
     }
 }
 
+/**
+ * Get size of AVL Tree (private)
+ * @tparam K data type of the key
+ * @tparam V data type being stored in pair.first
+ * @param curr current node
+ * @return size as an integer
+ */
 template<typename K, typename V>
 int AVLTree<K, V>::getSize(AVLTree::AVLNode *&curr) {
     if (curr == nullptr)
-        return 0;
+        return 0; //base case
     else
-        return (getSize(curr->left) + getSize(curr->right) + 1);
+        return (getSize(curr->left) + getSize(curr->right) + 1); //loop through each branch and increment int by 1 for each node
 }
 
+/**
+ * Get size of AVL Tree (public)
+ * @tparam K data type of the key
+ * @tparam V data type being stored in pair.first
+ * @return size as int
+ */
 template<typename K, typename V>
 int AVLTree<K, V>::getSize() {
     return getSize(root);
