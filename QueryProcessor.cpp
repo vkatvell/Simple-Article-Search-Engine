@@ -454,7 +454,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 if(hasPERSON || hasORG) {
                     std::vector<std::pair<string, int>> intersectPaths;
-                    std::set_intersection(wordPaths.begin(), wordPaths.end(),
+                    std::set_intersection(cleanedWordPaths.begin(), cleanedWordPaths.end(),
                                           cleanedVec.begin(), cleanedVec.end(),
                                           std::back_inserter(intersectPaths), comparator{});
 
@@ -665,7 +665,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 std::sort(orgPath.begin(), orgPath.end());
 
                 // union of person and org paths
-                std::vector<std::pair<string,int>> personOrgs(100000);
+                std::vector<std::pair<string,int>> personOrgs(500000);
                 auto poItr = std::set_union(personPath.begin(), personPath.end(),
                                                    orgPath.begin(), orgPath.end(), personOrgs.begin());
 
@@ -728,18 +728,29 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 std::sort(whileLoopPaths.begin(), whileLoopPaths.end());
 
-                std::vector<std::pair<string, int>> wordPaths(100000);
-                std::vector<std::pair<string, int>>::iterator it;
+                std::vector<std::pair<string, int>> wordPaths;
 
-                it = std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
-                                           whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin());
-                wordPaths.resize(it - wordPaths.begin());
+                std::set_union(firstWordPaths.begin(), firstWordPaths.end(), whileLoopPaths.begin(),
+                               whileLoopPaths.end(), std::back_inserter(wordPaths), comparator{});
 
-                std::vector<std::pair<string, int>> unionPaths(100000);
+                auto cleaningWordPaths = eliminateVectorDupes(wordPaths);
+//                std::vector<std::pair<string, int>> wordPaths(500000);
+//                std::vector<std::pair<string, int>>::iterator it;
 
-                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
-                                    cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
-                unionPaths.resize(itr - unionPaths.begin());
+//                it = std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
+//                                           whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin());
+//                wordPaths.resize(it - wordPaths.begin());
+
+//                std::vector<std::pair<string, int>> unionPaths(500000);
+                std::vector<std::pair<string, int>> unionPaths;
+
+                std::set_union(cleaningWordPaths.begin(), cleaningWordPaths.end(), cleanedVec.begin(),
+                               cleanedVec.end(), std::back_inserter(unionPaths), comparator{});
+
+//                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
+//                                    cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
+//                unionPaths.resize(itr - unionPaths.begin());
+
 
                 auto cleaningUnionPaths = eliminateVectorDupes(unionPaths);
 
@@ -753,7 +764,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     removedDupes = eliminateVectorDupes(NOTsubtracted);
                 }
                 else {
-                    removedDupes = eliminateVectorDupes(unionPaths);
+                    removedDupes = eliminateVectorDupes(cleaningUnionPaths);
                 }
 
 
@@ -868,11 +879,15 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                 std::sort(orgPath.begin(), orgPath.end());
 
                 // union of person and org paths
-                std::vector<std::pair<string,int>> personOrgs(100000);
-                auto poItr = std::set_union(personPath.begin(), personPath.end(),
-                                            orgPath.begin(), orgPath.end(), personOrgs.begin());
+//                std::vector<std::pair<string,int>> personOrgs(100000);
+//                auto poItr = std::set_union(personPath.begin(), personPath.end(),
+//                                            orgPath.begin(), orgPath.end(), personOrgs.begin());
+//
+//                personOrgs.resize(poItr - personOrgs.begin());
 
-                personOrgs.resize(poItr - personOrgs.begin());
+                std::vector<std::pair<string, int>> personOrgs;
+                std::set_union(personPath.begin(), personPath.end(), orgPath.begin(),
+                               orgPath.end(), std::back_inserter(personOrgs), comparator{});
 
                 auto cleanedVec = eliminateVectorDupes(personOrgs);
 
@@ -928,18 +943,28 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
 
                 std::sort(whileLoopPaths.begin(), whileLoopPaths.end());
 
-                std::vector<std::pair<string, int>> wordPaths(100000);
-                std::vector<std::pair<string, int>>::iterator it;
+                std::vector<std::pair<string, int>> wordPaths;
+                std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
+                               whileLoopPaths.begin(), whileLoopPaths.end(), std::back_inserter(wordPaths), comparator{});
 
-                it = std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
-                                    whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin());
-                wordPaths.resize(it - wordPaths.begin());
+                auto cleaningWordPaths = eliminateVectorDupes(wordPaths);
 
-                std::vector<std::pair<string, int>> unionPaths(100000);
+//                std::vector<std::pair<string, int>> wordPaths(100000);
+//                std::vector<std::pair<string, int>>::iterator it;
+//
+//                it = std::set_union(firstWordPaths.begin(), firstWordPaths.end(),
+//                                    whileLoopPaths.begin(), whileLoopPaths.end(), wordPaths.begin());
+//                wordPaths.resize(it - wordPaths.begin());
 
-                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
-                                          cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
-                unionPaths.resize(itr - unionPaths.begin());
+//                std::vector<std::pair<string, int>> unionPaths(100000);
+
+                std::vector<std::pair<string, int>> unionPaths;
+                std::set_union(cleaningWordPaths.begin(), cleaningWordPaths.end(),
+                               cleanedVec.begin(), cleanedVec.end(), std::back_inserter(unionPaths), comparator{});
+
+//                auto itr = std::set_union(wordPaths.begin(), wordPaths.end(),
+//                                          cleanedVec.begin(), cleanedVec.end(), unionPaths.begin());
+//                unionPaths.resize(itr - unionPaths.begin());
 
                 auto cleaningUnionPaths = eliminateVectorDupes(unionPaths);
 
@@ -953,7 +978,7 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                     removedDupes = eliminateVectorDupes(NOTsubtracted);
                 }
                 else {
-                    removedDupes = eliminateVectorDupes(unionPaths);
+                    removedDupes = eliminateVectorDupes(cleaningUnionPaths);
                 }
 
 
