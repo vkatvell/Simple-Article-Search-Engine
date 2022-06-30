@@ -511,24 +511,6 @@ void QueryProcessor::menuSystem(AVLTree<string, string> &wordIndex, AVLTree<stri
                         string letterInput;
                         cin >> letterInput;
 
-                        bool letterFound = false;
-
-                        while(true) {
-                            cin >> letterInput;
-                            for(int i =0; i < letters.size(); i++) {
-                                if(letterInput == letters[i])
-                                    letterFound = true;
-                                else
-                                    letterFound = false;
-                            }
-                            if(!letterFound) {
-                                cout << "Not a valid input. Please try again." << endl;
-                            }
-                            else{
-                                break;
-                            }
-                        }
-
                         for(int i = 0; i < letters.size(); i++) {
                             if(letterInput == letters[i]) {
                                 accessedArticle(removedDupes[i].first);
