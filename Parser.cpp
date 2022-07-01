@@ -142,11 +142,11 @@ void Parser::testReadJsonFile(AVLTree<string, string> &wordIndex, AVLTree<string
 
 
     string text = d["text"].GetString();
-
+    //tokenize text with given delimiters
     std::unordered_map<string, int> text_map = tokenizer(text, " \n\t\r\f");
-
+    //remove stop words
     removeStopWords(text_map, stopWords);
-
+    //stem into new map
     std::unordered_map<string, int> stemmed_map = stemmer(text_map);
 
     auto it = stemmed_map.begin();
