@@ -1,5 +1,5 @@
 
-# Summer 2022 - Final Project Search Engine
+# Search Engine
 
-Template repository. 
+Built by Venkat Vellanki and Noah Henson.
 
